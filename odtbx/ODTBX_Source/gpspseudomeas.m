@@ -1,4 +1,4 @@
-function [y,H,R,AntLB] = gpspseudomeas(t,x,opts,qatt)
+function [y,H,R,AntLB,dtsv,AntVis] = gpspseudomeas(t,x,opts,qatt,prn)
 % Creates GPS pseudo-measurements (one-way measurements) biased by onboard clock errors.
 
 % [y,H,R] = GPSPSEUDOMEAS(t,x,options) creates GPS pseudo-measurements,
@@ -47,7 +47,13 @@ function [y,H,R,AntLB] = gpspseudomeas(t,x,opts,qatt)
 if nargin < 4
     qatt = [];
 end
-[y,H,R,AntLB] = gpsmeas(t,x,opts,qatt);
+
+if nargin < 5
+    prn = [];
+end
+
+% [y,H,R,AntLB] = gpsmeas(t,x,opts,qatt);
+[y,H,R,AntLB,dtsv,AntVis] = gpsmeas(t, x, opts,qatt,prn);
 clkind = opts.clockStateIndices; % where in the state the clock states are
 if opts.useDoppler
     if isfield(opts,'GPSBand'),

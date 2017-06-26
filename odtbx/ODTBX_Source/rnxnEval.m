@@ -34,7 +34,7 @@ function     [gps_pos, gps_vel, vel_tot,dtsv] = rnxnEval(time,ephs, sv)
 %                              17  double crs;          Sine harmonic correction to orbital radius
 %                              18  double deltan;            Mean motion delta from computed value
 %                              19  double m0;                                  Mean anomaly at TOE
-%                              20  double cuc;        Cosine harmonic correction to orbital radius
+%                              20  double cuc;        Cosine harmonic corr to argument of latitude
 %                              21  double ecc;                                        Eccentricity
 %                              22  double cus;          Sine harmonic corr to argument of latitude
 %                              23  double sqrta;                     Square root of semimajor axis

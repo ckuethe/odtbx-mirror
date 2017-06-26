@@ -79,7 +79,7 @@ if nargin > 0
     phys_param.meta.RX_meta.RX_ID = gps_data.RX_meta.RX_ID;
     phys_param.meta.RX_meta.meas_file = gps_data.RX_meta.meas_file;
     phys_param.meta.RX_meta.obs_metadata = [];
-    for i = length(gps_data.RX_meta.obs_metadata)
+    for i = 1:length(gps_data.RX_meta.obs_metadata)
         phys_param.meta.RX_meta.obs_metadata{i} = gps_data.RX_meta.obs_metadata{i};
     end
 else

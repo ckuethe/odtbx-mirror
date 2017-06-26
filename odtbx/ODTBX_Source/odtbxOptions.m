@@ -4,7 +4,7 @@ function options = odtbxOptions(type)
 %   with empty [] default values for all fields. With no output specified, 
 %   the list of valid options for the specified type is displayed.
 %
-%   OPTIONS = odtbxOptions(TYPE) returns a valid ODTBX options structure
+%   OPTIONS = odtbxOptions(TYPE) returns a valid JAT options structure
 %   for the input type. Valid types are listed below. If no type is
 %   entered, a structure is returned that has all valid options. If no
 %   return value is requested, a list of all valid options for that input
@@ -293,6 +293,10 @@ function options = odtbxOptions(type)
 %   Set this property to 'true' to calculate two angles corresponding to
 %   azimuth and elevation relative to the coordinate system of the state.
 %
+% useAngleRates - Compute angle rate measurements. [ true | {false} ]
+%   Set this property to 'true' to calculate azimuth and elevation rates
+%   relative to the coordinate system of the state.
+%
 % useLightTime - Light time correction in measurements. [ true | {false} ]
 %   Set this property to 'true' to include the light time delay in
 %   measurement calculations. This must be set to true in order to include
@@ -484,6 +488,7 @@ function options = odtbxOptions(type)
 %                                       Rotation2ECI, AntennaPointing
 %                                       AntennaOrientation
 %   Ravi Mathur         11/12/2013      Added: RinexFile
+%   Ryan Willmot        07/24/2015      Added useAngleRates option
 
 types = {
     'estimator'
@@ -553,6 +558,7 @@ measurementOptions = {
     'useDoppler'
     'useUnit'
     'useAngles'
+    'useAngleRates'
     'useLightTime'
     'useGPSIonosphere'          %THIS WILL BE DEPRICATED in future releases.
     'useIonosphere'
@@ -694,6 +700,8 @@ fprintf('                 useRange: [    {''true''} | ''false''   ]\n');
 fprintf('             useRangeRate: [    {''true''} | ''false''   ]\n');
 fprintf('               useDoppler: [      ''true'' | {''false''} ]\n');
 fprintf('                  useUnit: [      ''true'' | {''false''} ]\n');
+fprintf('                useAngles: [      ''true'' | {''false''} ]\n');
+fprintf('            useAngleRates: [      ''true'' | {''false''} ]\n');
 fprintf('             useLightTime: [      ''true'' | {''false''} ]\n');
 fprintf('         useGPSIonosphere: [      ''true'' | {''false''} ]\n');
 fprintf('            useIonosphere: [      ''true'' | {''false''} | @function_handle ]\n');

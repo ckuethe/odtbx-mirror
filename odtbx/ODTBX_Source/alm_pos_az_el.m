@@ -155,7 +155,7 @@
 % original code, now no longer used:
 %global ISNOON ISSHADOW POSTSHADOW time yaw yaw_rate nom_yaw nom_yaw_rate
 
-function [az,el,yaw] = alm_pos_az_el(epoch,time,rx_pos,tx_pos, tx_vel)
+function [az,el,yaw, isnoon, isshadow] = alm_pos_az_el(epoch,time,rx_pos,tx_pos, tx_vel,TX_ID,prns)
 
 
 
@@ -241,7 +241,7 @@ T = (julianTime - 2451545)/36525;
 
 % Calculate the beta angle and nominal yaw angle of the satellite in
 % degrees.
-[yaw] = get_beta_yaw_angles(tx_ECI_pos, tx_ECI_vel, T, time,tx_ECI_pos_unit);
+[yaw, isnoon, isshadow] = get_beta_yaw_angles(tx_ECI_pos, tx_ECI_vel, T, time,tx_ECI_pos_unit,TX_ID,prns);
 
 % Transform the LOS vector to local coordinates with respect to the satellite antenna.
 [LOS_ant] = eci2ant(yaw, tx_ECI_pos, tx_ECI_vel, LOS_unit);
@@ -267,7 +267,11 @@ for j = 1:1:size(LOS_ant,2)
     end
 end
 
+% Make sure azimuth sense is positive about +z body axis
+az = -az;
+% Keep azimuth between zero and 360
 az(az<0)=az(az<0)+360;
+
 
 end
 
@@ -330,7 +334,7 @@ end
 %           post-shadow maneuver
 %*******************************************************************************
 
-function yaw = get_beta_yaw_angles(pos_vect, vel_vect, T, time, tx_ECI_pos_unit)
+function [yaw,isnoon,isshadow] = get_beta_yaw_angles(pos_vect, vel_vect, T, time, tx_ECI_pos_unit,TX_ID,prns)
 
 % original code, now no longer used:
 %global ISNOON ISSHADOW time dt yaw yaw_rate nom_yaw nom_yaw_rate
@@ -340,6 +344,8 @@ gpssz = size(pos_vect,3);
 
 yaw_rate = zeros(length(time),gpssz);
 yaw = zeros(length(time),gpssz);
+isnoon = zeros(length(time),gpssz);
+isshadow = zeros(length(time),gpssz);
 
 
 d2r = pi/180;       % convert from degrees to radians
@@ -371,13 +377,14 @@ for k = 1:1:gpssz
     tmp(:,k) = sqrt(dot(orb_normal(:,:,k),orb_normal(:,:,k),1));
     
     %Build a 3xN matrix to divide against to avoid a second loop
-    tmp2 = repmat(tmp(:,1),1,3);
+    tmp2 = repmat(tmp(:,k),1,3);
     orb_norm_unit(:,:,k) = orb_normal(:,:,k)./tmp2';
     
     %Compute the beta angle in degrees
     % DEBUG!! the sin should be a cos, but not in the CO code, mabe a X-90
     % issue?
-    beta(:,k) = asin(dot(orb_norm_unit(:,:,k),r_sun_unit,1))*180/pi;
+%     beta(:,k) = asin(dot(orb_norm_unit(:,:,k),r_sun_unit,1))*180/pi;
+    beta(:,k) = 90 - acosd(dot(orb_norm_unit(:,:,k),r_sun_unit,1)); % -JEV this is equivalent to the above
     
     % determine the projection of the sun vector onto the orbit plane
     h_cross_rsun(:,:,k) = cross(orb_normal(:,:,k), r_sun_vector');
@@ -400,19 +407,16 @@ for k = 1:1:gpssz
     % determine alpha (rad), the angle in the satellite's orbit plane between noon and
     % the satellite's position. "Noon" is defined as the direction of the sun vector
     alpha(:,k) = atan2(dot(tx_ECI_pos_unit(:,:,k), h_cross_rsun_unit(:,:,k)), dot(tx_ECI_pos_unit(:,:,k), rsun_in_plane_unit(:,:,k)));
+    
+    % compute the vector from the satellite to the sun
+    % Note: need to reverse the satellite position vector so it points from satellite to earth
+    r_sun_sat(:,:,k) = r_sun_vector' + (-1)*pos_vect(:,:,k);
 end
-
-
-
-
 
 
 % quadrant check: make sure 0 < alpha < 2*pi
 alpha = ((alpha<0)*2*pi + (alpha<0).*alpha) + ((alpha >0).*alpha);
 
-% compute the vector from the satellite to the sun
-% Note: need to reverse the satellite position vector so it points from satellite to earth
-r_sun_sat = rsun_in_plane + (-1)*pos_vect;
 
 E = zeros(length(time),gpssz);
 for k = 1:1:gpssz 
@@ -429,16 +433,22 @@ end
 % compute the actual yaw angle, B (in degrees), induced by the yaw bias, b, inserted in the
 % satellite ACS
 b = 0.5;      % degrees, set as of Nov. 1995
+b = -b*sign(beta);
 B = asin(0.0175*b*d2r./sin(E))*r2d;
 
 % For E angles that are within +/- 5 degrees of noon or midnight, B becomes very large.
 % An E angle of 5 degrees corresponds to a B of about 6 degrees. Therefore, since we
 % don't know exactly what the ACS does in this range, we will set the maximum value of
 % B at 6 degrees when E is within +/- 5 degrees of noon or midnight (see Bar-Sever).
-B = min(abs(B),6).*sign(B);
+%
+% Bug fix: min(abs(B),6) will always be 6 when E < 0.5013 deg. However, for
+% those values B is singular and we get complex results in asin. The
+% behavior of sign for complex inputs is not logical as desired, so take
+% sign(real(B)) instead of sign(B) to keep B real.
+B = min(abs(B),6).*sign(real(B));
 
 % compute the nominal yaw angle
-nom_yaw = get_nominal_yaw(beta*d2r, alpha, B);
+nom_yaw = get_nominal_yaw(beta*d2r, alpha, B,TX_ID,prns);
 
 % Compute nominal yaw rate
 R = 0.13;     % maximal yaw rate, deg/sec,
@@ -451,12 +461,11 @@ RR = 0.0017;  % maximal yaw rate rate, deg/sec^2 (Bar-Sever)
 % by a constant.
 mu_dot = 0.0083;     % deg/sec
 % Compute B_dot (deg/sec), the rate of change of B
-B_dot = -0.0175*b*cos(E).*cos(beta*d2r).*sin(alpha+pi)*mu_dot./(cos(B*d2r).*(sin(E)).^3);
+B_dot = -0.0175*b.*cos(E).*cos(beta*d2r).*sin(alpha+pi)*mu_dot./(cos(B*d2r).*(sin(E)).^3);
 % Compute the nominal yaw rate (deg/sec)
 nom_yaw_rate = (mu_dot*tan(beta*d2r).*cos(alpha+pi)./(sin(alpha+pi).^2+tan(beta*d2r).^2)) + B_dot;
 
 
-dt = 1;
 ISNOON = zeros(gpssz,1);
 ISSHADOW = zeros(gpssz,1);
 shadow_entry_index = zeros(gpssz,1);
@@ -479,27 +488,27 @@ for time_tag = 1:1:length(T)
         
         
         
-        if beta > -5 & beta < 5 & time_tag ~= 1
+        if beta(time_tag, PRN_tag) > -5 && beta(time_tag, PRN_tag) < 5 && time_tag ~= 1
             if ISNOON(PRN_tag) == 0
                 % satellite is NOT in the noon maneuver regime
                 yaw(time_tag, PRN_tag) = nom_yaw(time_tag, PRN_tag);
                 yaw_rate(time_tag, PRN_tag) = nom_yaw_rate(time_tag, PRN_tag);
                 
-                if abs(nom_yaw_rate(time_tag, PRN_tag)) > R
+                if abs(nom_yaw_rate(time_tag, PRN_tag)) > R && ~ISSHADOW(PRN_tag) % midnight case
                     % satellite is beginning to enter the noon maneuver regime
                     yaw_rate(time_tag, PRN_tag) = R * sign(nom_yaw(time_tag, PRN_tag)-nom_yaw(time_tag-1, PRN_tag));
                     ISNOON(PRN_tag) = 1;
                 end
             else
                 % satellite is already in noon maneuver regime
-                yaw(time_tag, PRN_tag) = yaw(time_tag-1, PRN_tag) + yaw_rate(time_tag-1, PRN_tag) * dt;
+                yaw(time_tag, PRN_tag) = yaw(time_tag-1, PRN_tag) + yaw_rate(time_tag-1, PRN_tag) * (time(time_tag) - time(time_tag-1));
                 yaw_rate(time_tag, PRN_tag) = R * sign(nom_yaw(time_tag, PRN_tag)-nom_yaw(time_tag-1, PRN_tag));
                 
-                if yaw(time_tag, PRN_tag) > nom_yaw(time_tag, PRN_tag) && (nom_yaw(time_tag-1, PRN_tag)-nom_yaw(time_tag, PRN_tag))<=0
+                if yaw(time_tag, PRN_tag) > nom_yaw(time_tag, PRN_tag) && (nom_yaw(time_tag-1, PRN_tag)-nom_yaw(time_tag, PRN_tag))<=0 && abs(nom_yaw_rate(time_tag, PRN_tag)) < R
                     % satellite is on the "upslope" and has overshot the nominal yaw angle;
                     % satellite returns to nominal regime
                     ISNOON(PRN_tag) = 0;
-                elseif yaw(time_tag, PRN_tag) < nom_yaw(time_tag, PRN_tag) && (nom_yaw(time_tag-1, PRN_tag)-nom_yaw(time_tag, PRN_tag))>=0
+                elseif yaw(time_tag, PRN_tag) < nom_yaw(time_tag, PRN_tag) && (nom_yaw(time_tag-1, PRN_tag)-nom_yaw(time_tag, PRN_tag))>=0 && abs(nom_yaw_rate(time_tag, PRN_tag)) < R
                     % satellite is on the "downslope" and has undershot the nominal yaw angle;
                     % satellite returns to nominal regime
                     ISNOON(PRN_tag) = 0;
@@ -525,28 +534,29 @@ for time_tag = 1:1:length(T)
                         ISSHADOW(PRN_tag) = 1;
                         shadow_entry_index(PRN_tag) = time_tag;
                         t_i(PRN_tag) = time(shadow_entry_index(PRN_tag));
-                        
                         % determine yaw rate
-                        if sign(beta) ~= sign(b)
-                            yaw_rate(time_tag, PRN_tag) = R*-1;
-                        else
-                            yaw_rate(time_tag, PRN_tag) = R;
-                        end
+%                         if sign(beta(time_tag, PRN_tag)) ~= sign(b(time_tag, PRN_tag))
+%                             yaw_rate(time_tag, PRN_tag) = R*-1;
+%                         else
+%                             yaw_rate(time_tag, PRN_tag) = R;
+%                         end
+
                         % determine spin-up/down time
-                        t_spin(PRN_tag) = (R - yaw_rate(shadow_entry_index(PRN_tag),PRN_tag))/RR;
+                        t_spin(PRN_tag) = (R*sign(b(time_tag, PRN_tag)) - yaw_rate(shadow_entry_index(PRN_tag),PRN_tag))/(RR*sign(b(time_tag, PRN_tag)));
+                                             
                     end
                 end   % end ISNOON check
                 
             case 1
                 % satellite is in shadow-crossing regime
                 if time(time_tag) <= (t_i(PRN_tag) + t_spin(PRN_tag))
-                    yaw(time_tag, PRN_tag) = yaw(PRN_tag, shadow_entry_index(PRN_tag)) + yaw_rate(PRN_tag, shadow_entry_index(PRN_tag))*...
-                        (time(time_tag) - t_i(PRN_tag)) + 0.5*RR*(time(time_tag) - t_i(PRN_tag))^2;
-                    yaw(time_tag, PRN_tag) = mod(yaw(time_tag, PRN_tag),360);
+                    yaw(time_tag, PRN_tag) = yaw(shadow_entry_index(PRN_tag),PRN_tag) + yaw_rate(shadow_entry_index(PRN_tag),PRN_tag)*...
+                        (time(time_tag) - t_i(PRN_tag)) + 0.5*RR*sign(b(time_tag, PRN_tag))*(time(time_tag) - t_i(PRN_tag))^2;
+%                     yaw(time_tag, PRN_tag) = mod(yaw(time_tag, PRN_tag),360);
                 else
                     yaw(time_tag, PRN_tag) = yaw(shadow_entry_index(PRN_tag),PRN_tag) + yaw_rate(shadow_entry_index(PRN_tag),PRN_tag )*...
-                        t_spin(PRN_tag) + 0.5*RR*t_spin(PRN_tag)^2 + R*(time(time_tag) - t_i(PRN_tag) - t_spin(PRN_tag));
-                    yaw(time_tag, PRN_tag) = mod(yaw(time_tag, PRN_tag),360);
+                        t_spin(PRN_tag) + 0.5*RR*sign(b(time_tag, PRN_tag))*t_spin(PRN_tag)^2 + R*sign(b(time_tag, PRN_tag))*(time(time_tag) - t_i(PRN_tag) - t_spin(PRN_tag));
+%                     yaw(time_tag, PRN_tag) = mod(yaw(time_tag, PRN_tag),360);
                 end
                 
                 % check to see if satellite is leaving shadow regime
@@ -560,16 +570,16 @@ for time_tag = 1:1:length(T)
                 end
             case 2
                 % satellite is in post-shadow maneuver
-                yaw_rate(PRN_tag,time_tag) = R * sign(D(PRN_tag));
-                t_1 = (yaw_rate(PRN_tag,time_tag) - R)/(RR*sign(D(PRN_tag)));
+                yaw_rate(time_tag, PRN_tag) = R * sign(D(PRN_tag));
+                t_1 = (yaw_rate(time_tag, PRN_tag) - R*sign(b(time_tag, PRN_tag)))/(RR*sign(D(PRN_tag)));
                 % compute the yaw angle
                 if time(time_tag) < (time(shadow_exit_index(PRN_tag)) + t_1)
-                    yaw(time_tag, PRN_tag) = yaw(shadow_exit_index(PRN_tag),PRN_tag) + R*(time(time_tag)-time(shadow_exit_index(PRN_tag)))+...
+                    yaw(time_tag, PRN_tag) = yaw(shadow_exit_index(PRN_tag),PRN_tag) + R*sign(b(time_tag, PRN_tag))*(time(time_tag)-time(shadow_exit_index(PRN_tag)))+...
                         0.5*RR*sign(D(PRN_tag))*(time(time_tag)-time(shadow_exit_index(PRN_tag)))^2;
                     yaw(time_tag, PRN_tag) = mod(yaw(time_tag, PRN_tag),360);
                 else
-                    yaw(time_tag, PRN_tag) = yaw(shadow_exit_index(PRN_tag),PRN_tag) + R*t_1+...
-                        0.5*RR*sign(D(PRN_tag))*t_1^2 + R*sign(D(PRN_tag))*(time(time_tag)-time(shadow_exit_index(PRN_tag))-t_1);
+                    yaw(time_tag, PRN_tag) = yaw(shadow_exit_index(PRN_tag),PRN_tag) + R*sign(b(time_tag, PRN_tag))*t_1+...
+                        0.5*RR*sign(D(PRN_tag))*t_1^2 + yaw_rate(time_tag, PRN_tag)*(time(time_tag)-time(shadow_exit_index(PRN_tag))-t_1);
                     yaw(time_tag, PRN_tag) = mod(yaw(time_tag, PRN_tag),360);
                 end
                 
@@ -585,8 +595,10 @@ for time_tag = 1:1:length(T)
                     % satellite has completed post-shadow maneuver; return to nominal
                     ISSHADOW(PRN_tag) = 0;
                 end
-        end
-    end   % end switch/case
+        end % end switch/case
+    isnoon(time_tag,PRN_tag) = ISNOON(PRN_tag);
+    isshadow(time_tag,PRN_tag) = ISSHADOW(PRN_tag);
+    end   
 end
 end
 
@@ -661,32 +673,69 @@ end
 % of Geodesy (1996) 70:714-723
 %***********************************************************************************
 
-function nom_yaw = get_nominal_yaw(beta, alpha, B)
+function nom_yaw = get_nominal_yaw(beta, alpha, B,TX_ID,prns)
 
 r2d = 180/pi;    % convert radians to degrees
-
+gpssz = size(beta,2);
 % compute the nominal yaw angle
 
-%if beta > 0
-tmp = atan((tan(beta)./sin(alpha)))*r2d;
-nom_yaw = tmp.*(beta>0);
+% %if beta > 0
+% tmp = atan((tan(beta)./sin(alpha)))*r2d;
+% nom_yaw = tmp.*(beta>0);
+% 
+% %if alpha is between pi and 2*pi, add 180 degrees + B
+% V = (alpha > pi & alpha <= 2*pi & beta > 0);
+% nom_yaw = nom_yaw + V*180 + B.*V;
+% 
+%     
+% %if beta < 0
+% clear tmp;
+% tmp = mod( (atan( tan(beta)./sin(alpha) ))*r2d, 360);
+% nom_yaw2 = tmp.*(beta<0);    
+% 
+% %if alpha > than pi, add 180 + B;
+% V = (alpha > pi &  beta < 0);
+% nom_yaw2 = nom_yaw2 + V*180 + B.*V;
+% 
+% %Now sum the two cases
+% nom_yaw = nom_yaw + nom_yaw2;
+% 
 
-%if alpha is between pi and 2*pi, add 180 degrees + B
-V = (alpha > pi & alpha <= 2*pi & beta > 0);
-nom_yaw = nom_yaw + V*180 + B.*V;
+% JEV 2/24/15: The below code exactly matches what is in the Bar-Sever
+% paper now. The nominal yaw angle is the angle of rotation about the
+% z-axis (nadir pointing), from the velocity direction to the +x axis. This
+% model was developed for the block IIA satellites and also applies to the
+% block IIF (all Boeing svs). This alogorithm insures that the +x axis is
+% pointing towards the sun.
+%
+% The nominal yaw for the block IIR/IIR-M is different because these
+% Lockheed Martin svs point the -x axis towards the sun. 
 
-    
-%if beta < 0
-clear tmp;
-tmp = mod( (atan( tan(beta)./sin(alpha) ))*r2d, 360);
-nom_yaw2 = tmp.*(beta<0);    
+% Bar-Sever algorithm uses the orbit angle which is defined as the angle
+% from orbit midnight (not orbit noon) to the spacecraft's position vector.
+orb_angle = mod(alpha+pi,2*pi);
 
-%if alpha > than pi, add 180 + B;
-V = (alpha > pi &  beta < 0);
-nom_yaw2 = nom_yaw2 + V*180 + B.*V;
+% Nominal angle calculation for the IIA or IIF svs. The sense of this angle
+% should always be opposite of that of the beta angle.
+nom_yaw = atan2(-tan(beta),sin(orb_angle))*r2d + B;
 
-%Now sum the two cases
-nom_yaw = nom_yaw + nom_yaw2;
+% Now if we are flying IIR/IIR-M svs, the -x direction should be facing the
+% sun. So the angle from the velocity direction to the +x axis will be the
+% complement of the IIA/IIF angle and have the opposite sense, i.e., the
+% absolute value of the two angles should add up to 180 degrees. 
+
+for k = 1: gpssz
+    if gpssz==1
+        block = TX_ID.block_type;
+    else
+        block = TX_ID{k}.block_type;
+    end
+    if (block==2 || block==3 || block==4) %(IIR,block IIR with modernized antenna (behaves like IIR-M),block IIR-M)
+        nom_yaw(:,k) = -sign(nom_yaw(:,k)).*(180 - abs(nom_yaw(:,k)));
+    else
+        % default model is for IIA and IIF
+    end
+end
 end
 
 
@@ -713,15 +762,17 @@ end
 
 function shadow = compute_shadow(r_sun_vector, sat_pos_vect)
 
-R_sun = 695990000;      % sun's radius, m (Conway & Prussing)    
-R_earth = 6378136.3;    % earth's radius, m (Vallado, 2nd ed., JGM-2)
-r_sun_mag = norm(r_sun_vector);
-sat_pos_mag = norm(sat_pos_vect);
-angle_penumbra = atan2((R_sun + R_earth),r_sun_mag);
 
-if dot(r_sun_vector, sat_pos_vect) < 0
+ang_sun_sat = r_sun_vector*sat_pos_vect; % do inner product, less overhead, don't do it twoice -JEV,12/15/14
+if ang_sun_sat < 0
+    R_sun = 695990000;      % sun's radius, m (Conway & Prussing)    
+    R_earth = 6378136.3;    % earth's radius, m (Vallado, 2nd ed., JGM-2)
+    r_sun_mag = norm(r_sun_vector);
+    sat_pos_mag = norm(sat_pos_vect);
+    angle_penumbra = atan2((R_sun + R_earth),r_sun_mag);
+    
     % determine the angle between r_sun_vector and sat_pos_vect
-    angle = acos(dot(r_sun_vector, sat_pos_vect)/(r_sun_mag * sat_pos_mag));
+    angle = acos(ang_sun_sat/(r_sun_mag * sat_pos_mag));
     
     sat_horiz = sat_pos_mag * cos(angle);
     sat_vert = sat_pos_mag * sin(angle);
@@ -766,7 +817,28 @@ LOS_ant = zeros(size(tx_sat_pos));
 for j = 1:1:size(tx_sat_pos,2)
     
     for k = 1:1:size(yaw,2)
-        yaw_rad = yaw(j,k)*pi/180;
+        
+        % JEV 2/24/15: Two rotations are performed, 1st rotation takes the
+        % inertial LOS vector into the RIC frame, the 2nd rotation takes
+        % the RIC LOS vector into the antenna (body) frame. Since the yaw
+        % angle is defined as an angle from the in-track direction to the
+        % body x axis, the yaw angle is the rotation from RIC to the body
+        % frame. In all cases, the body z axis points in the -R direction,
+        % this rotation must be about the -R (1st) axis of the RIC frame.
+        % Subsequent code for calculating the azimuth angle in the body
+        % frame assumes the following mapping: in-track -> x axis (body),
+        % cross-track -> -y axis (body), radial -> -z axis (body). This is
+        % why the 3rd and 2nd axis to are used to calculate the azimuth. 
+        % Final azimuth output will be an angle [0,360] defined as 0 at the 
+        % +x body axis and with positive sense about the -z body axis.
+        % Additionally, since the line of sight unit vector is defined as
+        % tx_eci - rx_eci, we need to use -LOS_unit vector to create the
+        % LOS_ant we are expecting.
+        %
+        % JEV 4/13/15: Will convert the azimuth sense to about +z body axis
+        % before exiting alm_pos_az_el.m
+        
+        yaw_rad = -yaw(j,k)*pi/180;
         
         ROT1 = [1, 0, 0; 0, cos(yaw_rad), sin(yaw_rad); 0, -sin(yaw_rad), cos(yaw_rad)];
         
@@ -776,7 +848,7 @@ for j = 1:1:size(tx_sat_pos,2)
         
         RIC_matrix = [R_hat, I_hat, C_hat];
         
-        LOS_ant(1:3,j,k) = ROT1 * RIC_matrix' * LOS_unit(1:3,j,k);
+        LOS_ant(1:3,j,k) = ROT1 * RIC_matrix' * -LOS_unit(1:3,j,k);
     end
 end
 end

@@ -1,0 +1,147 @@
+
+%----- Spacecraft
+Create Spacecraft SimSat;
+SimSat.DateFormat = TAIModJulian;
+SimSat.Epoch = '21545';
+SimSat.CoordinateSystem = EarthMJ2000Eq;
+SimSat.DisplayStateType = Cartesian;
+SimSat.X = 70000;
+SimSat.Y = 20000;
+SimSat.Z = 5000;
+SimSat.VX = 0;
+SimSat.VY = 7.35;
+SimSat.VZ = 1;
+SimSat.DryMass = 850;
+SimSat.Cd = 2.2;
+SimSat.Cr = 1.8;
+SimSat.DragArea = 15;
+SimSat.SRPArea = 1;
+SimSat.NAIFId = -10025001;
+SimSat.NAIFIdReferenceFrame = -9025001;
+SimSat.OrbitColor = Green;
+SimSat.TargetColor = LightGray;
+SimSat.EstimationStateType = 'Cartesian';
+SimSat.OrbitErrorCovariance = [ 1e+070 0 0 0 0 0 ; 0 1e+070 0 0 0 0 ; 0 0 1e+070 0 0 0 ; 0 0 0 1e+070 0 0 ; 0 0 0 0 1e+070 0 ; 0 0 0 0 0 1e+070 ];
+SimSat.CdSigma = 1e+070;
+SimSat.CrSigma = 1e+070;
+SimSat.Id = 'SatId';
+SimSat.Attitude = CoordinateSystemFixed;
+SimSat.SPADSRPScaleFactor = 1;
+SimSat.AddHardware = {Transponder1, Antenna2};
+SimSat.ModelFile = 'aura.3ds';
+SimSat.ModelOffsetX = 0;
+SimSat.ModelOffsetY = 0;
+SimSat.ModelOffsetZ = 0;
+SimSat.ModelRotationX = 0;
+SimSat.ModelRotationY = 0;
+SimSat.ModelRotationZ = 0;
+SimSat.ModelScale = 1;
+SimSat.AttitudeDisplayStateType = 'Quaternion';
+SimSat.AttitudeRateDisplayStateType = 'AngularVelocity';
+SimSat.AttitudeCoordinateSystem = EarthMJ2000Eq;
+SimSat.EulerAngleSequence = '321';
+
+%----------------------------------------
+%---------- Hardware Components
+%----------------------------------------
+
+%----- Propagators
+%Create Propagator prop;
+
+%----- Communications Hardware
+Create Antenna Antenna1 Antenna2;
+
+Create Transmitter Transmitter1;
+Transmitter1.PrimaryAntenna = Antenna1;
+Transmitter1.Frequency = 2067.5;
+
+Create Receiver Receiver1;
+Receiver1.PrimaryAntenna = Antenna1;
+
+Create Transponder Transponder1;
+Transponder1.HardwareDelay = 0;
+Transponder1.PrimaryAntenna = Antenna2;
+Transponder1.TurnAroundRatio = '240/221';
+
+%----------------------------------------
+%---------- GroundStations
+%----------------------------------------
+
+%----- GroundStation
+Create GroundStation GDS;
+GDS.OrbitColor = Thistle;
+GDS.TargetColor = DarkGray;
+GDS.CentralBody = Earth;
+GDS.StateType = Spherical;
+GDS.HorizonReference = Ellipsoid;
+GDS.Location1 = 0;
+GDS.Location2 = 0;
+GDS.Location3 = 0;
+GDS.Id = 'StationId';
+GDS.AddHardware = {Transmitter1, Receiver1, Antenna1};
+GDS.IonosphereModel = 'None';
+GDS.TroposphereModel = 'None';
+GDS.DataSource = 'Constant';
+GDS.Temperature = 295.1;
+GDS.Pressure = 1013.5;
+GDS.Humidity = 55;
+GDS.MinimumElevationAngle = 7;
+GDS.ErrorModels = {TheErrorModel, TheErrorModel2};
+
+
+
+%----------------------------------------
+%---------- ForceModels
+%----------------------------------------
+
+Create ForceModel DefaultProp_ForceModel;
+DefaultProp_ForceModel.CentralBody = Earth;
+DefaultProp_ForceModel.PrimaryBodies = {Earth};
+DefaultProp_ForceModel.Drag = None;
+DefaultProp_ForceModel.SRP = Off;
+DefaultProp_ForceModel.RelativisticCorrection = Off;
+DefaultProp_ForceModel.ErrorControl = RSSStep;
+DefaultProp_ForceModel.GravityField.Earth.Degree = 4;
+DefaultProp_ForceModel.GravityField.Earth.Order = 4;
+DefaultProp_ForceModel.GravityField.Earth.PotentialFile = 'JGM2.cof';
+DefaultProp_ForceModel.GravityField.Earth.EarthTideModel = 'None';
+
+%----------------------------------------
+%---------- ErrorModels
+%----------------------------------------
+
+Create ErrorModel TheErrorModel;
+TheErrorModel.Type = 'Range';
+TheErrorModel.NoiseSigma = 0.05;     % unit: km
+TheErrorModel.Bias = 0;
+TheErrorModel.BiasSigma = 1e+070;
+
+Create ErrorModel TheErrorModel2;
+TheErrorModel2.Type = 'RangeRate';
+TheErrorModel2.NoiseSigma = 5e-005;
+TheErrorModel2.Bias = 0;
+TheErrorModel2.BiasSigma = 1e+070;
+
+%----------------------------------------
+%---------- MeasurementModels
+%----------------------------------------
+
+%----- Range Measurement
+Create TrackingFileSet simData;
+simData.AddTrackingConfig = {'{{GDS,SimSat,GDS},Range,RangeRate}'};
+simData.FileName = {'TrkFile_API_GN.gmd'};
+simData.UseLightTime = false;
+simData.UseRelativityCorrection = false;
+simData.UseETminusTAI = false;
+simData.SimRangeModuloConstant = 1e+018;
+simData.SimDopplerCountInterval = 1;
+simData.SimTDRSNode4Frequency = 2000;
+simData.SimTDRSNode4FrequencyBand = 1;
+simData.SimTDRSSmarId = 0;
+simData.SimTDRSDataFlag = 0;
+
+%----------------------------------------
+%---------- Mission Sequence
+%----------------------------------------
+
+BeginMissionSequence;

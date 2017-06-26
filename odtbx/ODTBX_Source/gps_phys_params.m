@@ -139,6 +139,9 @@ function [phys_param, fil_gps_meas] = gps_phys_params(gps_meas, RX_state_source,
 %                                   velocity projected along the LOS (km/s)
 %       .GPS_yaw	double	1xZ     the GPS yaw model yaw angle of the
 %                                   satellite (deg)
+%       .ISNOON     int     1xZ     GPS SV is in a noon-turn (1) or not (0)
+%       .ISSHADOW	int     1xZ     GPS SV is in shadow (1) or post-shadow
+%                                   (2) or not (0)
 %       .meta       struct	1       metadata for this phys_param
 %           meta fields:
 %       .RX_meta	struct	1       Measurement metadata from the gps_meas 
@@ -299,6 +302,8 @@ for prnind = 1:prnlen
     phys_param_tmp.range = [];
     phys_param_tmp.range_rate = [];
     phys_param_tmp.GPS_yaw = [];
+    phys_param_tmp.ISNOON = [];
+    phys_param_tmp.ISSHADOW = [];
     
     % Find the matching fil_gps_meas.GPS_PRN(prnind) in TX_IDs.GPS_PRN,
     % and use that transmitter ID.
@@ -432,7 +437,7 @@ for prnind = 1:prnlen
     end
     
     %% calculate the physical parameters
-    out = getgpsmeas((tmeas_utc-epoch)*86400,xmeas,measOptions,qattmeas,params);
+    out = getgpsmeas((tmeas_utc-epoch)*86400,xmeas,measOptions,qattmeas,params,TX_IDs{prnind});
     
     if any(out.health)
         
@@ -449,6 +454,9 @@ for prnind = 1:prnlen
         phys_param_tmp.range = out.range; % range (km)
         phys_param_tmp.range_rate = out.rrate; % range (km/s)
         phys_param_tmp.GPS_yaw = out.GPS_yaw'; % GPS SV yaw angle
+        phys_param_tmp.ISNOON = out.ISNOON'; % Noon turn?
+        phys_param_tmp.ISSHADOW = out.ISSHADOW'; % Midnight turn?
+        
     else
         fprintf(1,'gps_phys_params: Almanac ''%s'' does not support PRN %d, skipping!\n',...
                 gps_alm_file, fil_gps_meas.GPS_PRN(prnind));

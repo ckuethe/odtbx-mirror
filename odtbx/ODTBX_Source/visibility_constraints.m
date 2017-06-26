@@ -1,4 +1,4 @@
-function [HVIS] = visibility_constraints(AntLB, options, health, Hvis_earth, Hvis_atm)
+function [HVIS, AntVis] = visibility_constraints(AntLB, options, health, Hvis_earth, Hvis_atm)
 
 link_budget = getOdtbxOptions(options, 'linkbudget', []);
 

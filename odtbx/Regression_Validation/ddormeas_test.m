@@ -22,6 +22,8 @@ function failed = ddormeas_test()
 %
 %   Ravi Mathur         08/28/2012      Extracted from ddormeas.m
 
+clear ddormeas % clears the persistent variables in ddormeas
+
 disp(' ')
 disp(' ')
 disp('Performing Test....')

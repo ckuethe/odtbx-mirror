@@ -1,4 +1,4 @@
-function [y,H,R,AntLB,dtsv] = gpsmeas(t,x,options,qatt,sv)
+function [y,H,R,AntLB,dtsv,AntVis] = gpsmeas(t,x,options,qatt,prn)
 
 % GPSMEAS  Makes GPS based measurements using dynamic C/No tracking threshold
 %
@@ -202,6 +202,7 @@ function [y,H,R,AntLB,dtsv] = gpsmeas(t,x,options,qatt,sv)
 %                           bias due to visibility or blockage.  The fields
 %                           are:
 %           Halpha_r    (MxN)   The receiver elevation angle (rad)
+%           Halpha_t    (MxN)   The transmitter elevation angle (rad)
 %           Hvis_beta   (MxN)   Logical array where both transmit and
 %                               receive antenna elevation angles are
 %                               within antenna mask angle limits
@@ -338,18 +339,25 @@ freq            = GPSFreq.(link_budget.GPSBand);
 options = setOdtbxOptions(options, 'frequencyTransmit', freq);
 % r_mask          = EARTH_RADIUS + AtmMask;	% Atmosphere mask radius (km)
  
+% 1 - II/IIA
+% 2 - IIR
+% 3 - IIR with modernized antenna (behaves like IIR-M)
+% 4 - IIR-M
+% 5 - IIF
+% 6 - III  - currently use IIR-M gain pattern and -158.5 min power
 
 %Set up block type for antenna pattern selection, indexed by PRN
-block=[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1];
-
-if nargin < 5
+if nargin < 5 || isempty(prn)
     GPS_SIZE = 32;
+    TX_ID = get_gps_block(options);
 else
-    params.PRN = sv;
+    params.PRN = prn;
     GPS_SIZE = 1;
-    link_budget.GPSBlock = block(sv);
+    TX_ID = get_gps_block(options,params.PRN);
+    link_budget.GPSBlock = TX_ID.block_type;
 end
                     
+
 %% Input Evaluation
 % This Section includes GPS satellite gain pattern file names, reference transmitter
 %  power values, and error checking of parameters specified in definitions file.
@@ -422,20 +430,28 @@ switch freq
                 xmit_pattern = 'GPSIIR_ALL_L1MEAN_30deg.txt';	 % GPS SV gain pattern file
                 %xmit_pattern = 'GPSIIR_ALL_L1MEAN_30deg.txt';	 % GPS SV gain pattern file
                 xmit_power = 13.5;
-            case 3  % IIR-M
+            case 3  % IIR with modernized antenna (behaves like IIR-M)
                 warning('ODTBX:gpsmeas:gpsblock', 'Only GPS Block II/IIA is publicly available.');
                 xmit_pattern = 'GPSIIRM_P1_L1MEAN_30deg.txt';	 % GPS SV gain pattern file
                 %xmit_pattern = 'GPSIIRM_P1_L1MEAN_30deg.txt';	 % GPS SV gain pattern file
                 xmit_power = 12.8;
-            case 4  % IIF
+            case 4  % IIR-M
                 warning('ODTBX:gpsmeas:gpsblock', 'Only GPS Block II/IIA is publicly available.');
-                error('Unsupported Option: No IIF antenna patterns defined');
-            case 5  % III  - currently use IIR-M gain pattern and -158.5 min power
+                xmit_pattern = 'GPSIIRM_P1_L1MEAN_30deg.txt';	 % GPS SV gain pattern file
+                %xmit_pattern = 'GPSIIRM_P1_L1MEAN_30deg.txt';	 % GPS SV gain pattern file
+                xmit_power = 12.8;
+            case 5  % IIF
+                warning('ODTBX:gpsmeas:gpsblock', 'Only GPS Block II/IIA is publicly available.');
+%                error('Unsupported Option: No IIF antenna patterns defined');
+                warning('Unsupported Option: using block IIR-M pattern instead');
+                xmit_pattern = 'GPSIIRM_P1_L1MEAN_30deg.txt';	 % GPS SV gain pattern file
+                xmit_power = 12.8;
+            case 6  % III  - currently use IIR-M gain pattern and -158.5 min power
                 warning('ODTBX:gpsmeas:gpsblock', 'Only GPS Block II/IIA is publicly available.');
                 %xmit_pattern = 'GPSIIRM_P1_L1MEAN.txt';	 % GPS SV gain pattern file
                 xmit_pattern = 'GPSIIRM_P1_L1MEAN_30deg.txt';	 % GPS SV gain pattern file
                 xmit_power = 12.8;
-            case 6  % Ficticious 3D antenna pattern based on IIA
+            case 7  % Ficticious 3D antenna pattern based on IIA
                 xmit_pattern = 'GPSIIA_L1_3Dantenna.txt';	 % GPS SV gain pattern file
                 xmit_power = 13.4;
         end
@@ -448,19 +464,24 @@ switch freq
                 xmit_pattern = 'GPSIIR_ALL_L2MEAN_30deg.txt';	 % GPS SV gain pattern file
                 %xmit_pattern = 'GPSIIR_ALL_L2MEAN_30deg.txt';	 % GPS SV gain pattern file
                 xmit_power = 6.9;
-            case 3  % IIR-M
+            case 3 % IIR with modernized antenna (behaves like IIR-M)
                 warning('ODTBX:gpsmeas:gpsblock', 'Only GPS Block II/IIA is publicly available.');
                 xmit_pattern = 'GPSIIRM_P1_L2MEAN_30deg.txt';	 % GPS SV gain pattern file
                 %xmit_pattern = 'GPSIIRM_P1_L2MEAN_30deg.txt';	 % GPS SV gain pattern file
                 xmit_power = 9.4;
-            case 4  % IIF
+            case 4  % IIR-M
+                warning('ODTBX:gpsmeas:gpsblock', 'Only GPS Block II/IIA is publicly available.');
+                xmit_pattern = 'GPSIIRM_P1_L2MEAN_30deg.txt';	 % GPS SV gain pattern file
+                %xmit_pattern = 'GPSIIRM_P1_L2MEAN_30deg.txt';	 % GPS SV gain pattern file
+                xmit_power = 9.4;
+            case 5  % IIF
                 warning('ODTBX:gpsmeas:gpsblock', 'Only GPS Block II/IIA is publicly available.');
                 error('Unsupported Option: No IIF antenna patterns defined')
-            case 5  % III  - currently use IIR-M gain pattern and -158.5 min power
+            case 6  % III  - currently use IIR-M gain pattern and -158.5 min power
                 warning('ODTBX:gpsmeas:gpsblock', 'Only GPS Block II/IIA is publicly available.');
                 xmit_pattern = 'GPSIIRM_P1_L2MEAN_30deg.txt';	 % GPS SV gain pattern file
                 xmit_power = 10.9;
-            case 6  % Ficticious 3D antenna pattern based on IIA
+            case 7  % Ficticious 3D antenna pattern based on IIA
                 error('Unsupported Option: No 2D antenna patterns defined for L2 frequency.');
         end
 end
@@ -513,7 +534,7 @@ if nargin < 4
 end
 
 % Calculate the physical parameters
-out = getgpsmeas(t,x,options,qatt,params);
+out = getgpsmeas(t,x,options,qatt,params,TX_ID);
 
 %% Generate link budget structures from calculated data
 
@@ -525,7 +546,7 @@ RX_link.pattern = RXpattern;
 TX_link.pattern = TXpattern;
 
 %% Calculate Link Budget
-[AntLB, HVIS] = calc_linkbudgets(out, options, RX_link, TX_link);
+[AntLB, HVIS, AntVis] = calc_linkbudgets(out, options, RX_link, TX_link);
 
 %% Pull information from measurements helpful in calculating outputs
 % the physical parameter results:

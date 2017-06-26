@@ -1,0 +1,210 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"  
+  "http://www.w3.org/TR/html4/loose.dtd">  
+<html > 
+<head><title></title> 
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1"> 
+<meta name="generator" content="TeX4ht (http://www.cse.ohio-state.edu/~gurari/TeX4ht/)"> 
+<meta name="originator" content="TeX4ht (http://www.cse.ohio-state.edu/~gurari/TeX4ht/)"> 
+<!-- html --> 
+<meta name="src" content="IOD_File_Formatting_Guidelines.tex"> 
+<meta name="date" content="2015-08-06 16:58:00"> 
+<link rel="stylesheet" type="text/css" href="IOD_File_Formatting_Guidelines.css"> 
+</head><body 
+>
+<!--l. 17--><p class="noindent" >
+
+<div class="center" 
+>
+<!--l. 19--><p class="noindent" >
+<!--l. 20--><p class="noindent" ><span 
+class="cmbx-12">Initial Orbit Determination (IOD) Application: </span><br 
+class="newline" /><span 
+class="cmbx-12">File Formatting Guidelines</span></div>
+<!--l. 24--><p class="indent" >   &#x00A0;     This section details the data file formatting requirements for this application to work
+properly. <span 
+class="cmbx-10">WARNING: </span>Be cautious with the units of the values in the data file. There is an
+expected unit for each value in the data file and failure to follow this regulation will result in
+erroneous orbit estimations. The file format for all scenarios follows a tabular pattern to assist
+with multiple observations. <br 
+class="newline" /><br 
+class="newline" />The supported data file extensions are <span 
+class="cmbx-10">.txt</span>, <span 
+class="cmbx-10">.dat </span>and <span 
+class="cmbx-10">.csv</span>
+   <h3 class="sectionHead"><span class="titlemark">1   </span> <a 
+ id="x1-10001"></a>Angles-Only Observations</h3>
+<!--l. 29--><p class="noindent" >For angles-only observations, the data file format is as follows:
+<div class="center" 
+>
+<!--l. 31--><p class="noindent" >
+<div class="tabular"> <table id="TBL-1" class="tabular" 
+cellspacing="0" cellpadding="0"  
+><colgroup id="TBL-1-1g"><col 
+id="TBL-1-1"><col 
+id="TBL-1-2"><col 
+id="TBL-1-3"><col 
+id="TBL-1-4"><col 
+id="TBL-1-5"><col 
+id="TBL-1-6"><col 
+id="TBL-1-7"><col 
+id="TBL-1-8"><col 
+id="TBL-1-9"><col 
+id="TBL-1-10"><col 
+id="TBL-1-11"><col 
+id="TBL-1-12"></colgroup><tr  
+ style="vertical-align:baseline;" id="TBL-1-1-"><td  style="white-space:wrap; text-align:left;" id="TBL-1-1-1"  
+class="td11"><!--l. 35--><p class="noindent" ><span 
+class="cmr-8">Year</span> </td><td  style="white-space:wrap; text-align:left;" id="TBL-1-1-2"  
+class="td11"><!--l. 35--><p class="noindent" ><span 
+class="cmr-8">Month</span> </td><td  style="white-space:wrap; text-align:left;" id="TBL-1-1-3"  
+class="td11"><!--l. 35--><p class="noindent" ><span 
+class="cmr-8">Day</span> </td><td  style="white-space:wrap; text-align:left;" id="TBL-1-1-4"  
+class="td11"><!--l. 35--><p class="noindent" ><span 
+class="cmr-8">Time</span>        </td><td  style="white-space:wrap; text-align:left;" id="TBL-1-1-5"  
+class="td11"><!--l. 35--><p class="noindent" ><span 
+class="cmr-8">RA</span>     </td><td  style="white-space:wrap; text-align:left;" id="TBL-1-1-6"  
+class="td11"><!--l. 35--><p class="noindent" ><span 
+class="cmr-8">RA</span><span 
+class="cmmi-8">&#x03C3;</span>    </td><td  style="white-space:wrap; text-align:left;" id="TBL-1-1-7"  
+class="td11"><!--l. 35--><p class="noindent" ><span 
+class="cmr-8">Dec</span>   </td><td  style="white-space:wrap; text-align:left;" id="TBL-1-1-8"  
+class="td11"><!--l. 35--><p class="noindent" ><span 
+class="cmr-8">Dec</span><span 
+class="cmmi-8">&#x03C3;</span>    </td><td  style="white-space:wrap; text-align:left;" id="TBL-1-1-9"  
+class="td11"><!--l. 35--><p class="noindent" ><span 
+class="cmr-8">Corr</span> </td><td  style="white-space:wrap; text-align:left;" id="TBL-1-1-10"  
+class="td11"><!--l. 35--><p class="noindent" ><span 
+class="cmr-8">Lat</span> </td><td  style="white-space:wrap; text-align:left;" id="TBL-1-1-11"  
+class="td11"><!--l. 35--><p class="noindent" ><span 
+class="cmr-8">Long</span> </td><td  style="white-space:nowrap; text-align:center;" id="TBL-1-1-12"  
+class="td11"><span 
+class="cmr-8">Alt</span></td>
+</tr><tr  
+ style="vertical-align:baseline;" id="TBL-1-2-"><td  style="white-space:wrap; text-align:left;" id="TBL-1-2-1"  
+class="td11"><!--l. 36--><p class="noindent" ><span 
+class="cmr-8">1996</span></td><td  style="white-space:wrap; text-align:left;" id="TBL-1-2-2"  
+class="td11"><!--l. 36--><p class="noindent" ><span 
+class="cmr-8">08</span>     </td><td  style="white-space:wrap; text-align:left;" id="TBL-1-2-3"  
+class="td11"><!--l. 36--><p class="noindent" ><span 
+class="cmr-8">20</span>  </td><td  style="white-space:wrap; text-align:left;" id="TBL-1-2-4"  
+class="td11"><!--l. 36--><p class="noindent" ><span 
+class="cmr-8">08:30:00.115</span> </td><td  style="white-space:wrap; text-align:left;" id="TBL-1-2-5"  
+class="td11"><!--l. 36--><p class="noindent" ><span 
+class="cmr-8">118.678</span> </td><td  style="white-space:wrap; text-align:left;" id="TBL-1-2-6"  
+class="td11"><!--l. 36--><p class="noindent" ><span 
+class="cmr-8">5.73e-4</span>  </td><td  style="white-space:wrap; text-align:left;" id="TBL-1-2-7"  
+class="td11"><!--l. 36--><p class="noindent" ><span 
+class="cmr-8">27.578</span> </td><td  style="white-space:wrap; text-align:left;" id="TBL-1-2-8"  
+class="td11"><!--l. 36--><p class="noindent" ><span 
+class="cmr-8">5.73e-4</span>  </td><td  style="white-space:wrap; text-align:left;" id="TBL-1-2-9"  
+class="td11"><!--l. 36--><p class="noindent" ><span 
+class="cmr-8">0</span>    </td><td  style="white-space:wrap; text-align:left;" id="TBL-1-2-10"  
+class="td11"><!--l. 36--><p class="noindent" ><span 
+class="cmr-8">40</span>  </td><td  style="white-space:wrap; text-align:left;" id="TBL-1-2-11"  
+class="td11"><!--l. 36--><p class="noindent" ><span 
+class="cmr-8">-110</span></td><td  style="white-space:nowrap; text-align:center;" id="TBL-1-2-12"  
+class="td11"> <span 
+class="cmr-8">2 </span></td>
+</tr><tr  
+ style="vertical-align:baseline;" id="TBL-1-3-"><td  style="white-space:wrap; text-align:left;" id="TBL-1-3-1"  
+class="td11"><!--l. 37--><p class="noindent" ><span 
+class="cmr-8">1996</span></td><td  style="white-space:wrap; text-align:left;" id="TBL-1-3-2"  
+class="td11"><!--l. 37--><p class="noindent" ><span 
+class="cmr-8">08</span>     </td><td  style="white-space:wrap; text-align:left;" id="TBL-1-3-3"  
+class="td11"><!--l. 37--><p class="noindent" ><span 
+class="cmr-8">20</span>  </td><td  style="white-space:wrap; text-align:left;" id="TBL-1-3-4"  
+class="td11"><!--l. 37--><p class="noindent" ><span 
+class="cmr-8">08:50:00.115</span> </td><td  style="white-space:wrap; text-align:left;" id="TBL-1-3-5"  
+class="td11"><!--l. 37--><p class="noindent" ><span 
+class="cmr-8">162.558</span> </td><td  style="white-space:wrap; text-align:left;" id="TBL-1-3-6"  
+class="td11"><!--l. 37--><p class="noindent" ><span 
+class="cmr-8">5.73e-4</span>  </td><td  style="white-space:wrap; text-align:left;" id="TBL-1-3-7"  
+class="td11"><!--l. 37--><p class="noindent" ><span 
+class="cmr-8">30.030</span> </td><td  style="white-space:wrap; text-align:left;" id="TBL-1-3-8"  
+class="td11"><!--l. 37--><p class="noindent" ><span 
+class="cmr-8">5.73e-4</span>  </td><td  style="white-space:wrap; text-align:left;" id="TBL-1-3-9"  
+class="td11"><!--l. 37--><p class="noindent" ><span 
+class="cmr-8">0</span>    </td><td  style="white-space:wrap; text-align:left;" id="TBL-1-3-10"  
+class="td11"><!--l. 37--><p class="noindent" ><span 
+class="cmr-8">40</span>  </td><td  style="white-space:wrap; text-align:left;" id="TBL-1-3-11"  
+class="td11"><!--l. 37--><p class="noindent" ><span 
+class="cmr-8">-110</span></td><td  style="white-space:nowrap; text-align:center;" id="TBL-1-3-12"  
+class="td11"> <span 
+class="cmr-8">2 </span></td>
+</tr><tr  
+ style="vertical-align:baseline;" id="TBL-1-4-"><td  style="white-space:wrap; text-align:left;" id="TBL-1-4-1"  
+class="td11"><!--l. 38--><p class="noindent" ><span 
+class="cmr-8">1996</span></td><td  style="white-space:wrap; text-align:left;" id="TBL-1-4-2"  
+class="td11"><!--l. 38--><p class="noindent" ><span 
+class="cmr-8">08</span>     </td><td  style="white-space:wrap; text-align:left;" id="TBL-1-4-3"  
+class="td11"><!--l. 38--><p class="noindent" ><span 
+class="cmr-8">20</span>  </td><td  style="white-space:wrap; text-align:left;" id="TBL-1-4-4"  
+class="td11"><!--l. 38--><p class="noindent" ><span 
+class="cmr-8">09:10:00.115</span> </td><td  style="white-space:wrap; text-align:left;" id="TBL-1-4-5"  
+class="td11"><!--l. 38--><p class="noindent" ><span 
+class="cmr-8">187.791</span> </td><td  style="white-space:wrap; text-align:left;" id="TBL-1-4-6"  
+class="td11"><!--l. 38--><p class="noindent" ><span 
+class="cmr-8">5.73e-4</span>  </td><td  style="white-space:wrap; text-align:left;" id="TBL-1-4-7"  
+class="td11"><!--l. 38--><p class="noindent" ><span 
+class="cmr-8">17.081</span> </td><td  style="white-space:wrap; text-align:left;" id="TBL-1-4-8"  
+class="td11"><!--l. 38--><p class="noindent" ><span 
+class="cmr-8">5.73e-4</span>  </td><td  style="white-space:wrap; text-align:left;" id="TBL-1-4-9"  
+class="td11"><!--l. 38--><p class="noindent" ><span 
+class="cmr-8">0</span>    </td><td  style="white-space:wrap; text-align:left;" id="TBL-1-4-10"  
+class="td11"><!--l. 38--><p class="noindent" ><span 
+class="cmr-8">40</span>  </td><td  style="white-space:wrap; text-align:left;" id="TBL-1-4-11"  
+class="td11"><!--l. 38--><p class="noindent" ><span 
+class="cmr-8">-110</span></td><td  style="white-space:nowrap; text-align:center;" id="TBL-1-4-12"  
+class="td11"> <span 
+class="cmr-8">2 </span></td>
+</tr><tr  
+ style="vertical-align:baseline;" id="TBL-1-5-"><td  style="white-space:wrap; text-align:left;" id="TBL-1-5-1"  
+class="td11">    </td></tr></table></div></div>
+<!--l. 43--><p class="indent" >   The above table shows the order and layout of the expected file format. Three example
+observations are provided, but note that the first row of labels <span 
+class="cmbx-10">should not </span>be included in the data
+file and is merely for reference. It is also important to note the unit expectations. RA, RA<span 
+class="cmmi-10">&#x03C3;</span>, Dec,
+Dec<span 
+class="cmmi-10">&#x03C3;</span>, Latitude (Lat) and Longitude (Long) are all in degrees. Altitude (Alt) should
+always be in km and the correlation (Corr) is unitless. Note that the right-ascension and
+declination values must be topocentric for geocentric orbits and geocentric for heliocentric
+orbits. Latitude, longitude, and altitude refer to the location of the observation site. If
+for example, the observation site is taken as the center of the Earth in a heliocentric
+inertial frame, then these values will be the same as the right ascension, declination, and
+range.
+<!--l. 48--><p class="indent" >   <span 
+class="cmbx-10">WARNING: </span>Be careful with coordinate frames. In an intertial frame, the latitude, longitude
+and altitude values of the observation site are equal to right-ascension, declination and
+range. The RA and Dec values in the data file should be topocentric for geocentric
+orbits with an observation site on the surface of the Earth. The LST is used as an
+approximation for the inertial position vectors of the observation sites in this situation
+unless a direction cosine matrix is provided by the user. For heliocentric orbits, the
+observation site can be at any location as long as the altitude, longitude, and latitude of the
+observation site as well as the RA and Dec values measured from the observation site are in a
+heliocentric intertial frame. Be aware of this distinction if other bodies are used as the
+main gravitational body by selecting &#8217;Other&#8217; as the orbit type. The output state vector
+will always be given in an inertial frame centered on the gravitational body. At this
+time, all gravitational bodies are modeled as perfect spheres with uniform gravitational
+fields.
+
+<!--l. 53--><p class="indent" >   The number of significant digits provided is up to the user, but the observation time must
+always be in the format displayed with three decimal places on the seconds value. <span 
+class="cmbx-10">NOTE: </span>Time
+must be UT1, not UTC. Time is in the form HH:MM:SS.FFF. Latitude values should be positive
+for North and negative for South. Similarly, longitude values should be negative for West and
+positive for East. Correlation is the correlation between the RA and Dec values for that
+observation.
+<!--l. 58--><p class="indent" >   The number of observations contained in the data file is up to the user, but there must be a
+<span 
+class="cmbx-10">minimum of three observations </span>for the application to work properly. All of the IOD
+techniques used in this application assume a default of three observations.
+<!--l. 61--><p class="indent" >   A file formatting function has been provided in the source code for the user&#8217;s benefit. It takes
+as input an epoch as a datenumber, the observation times as datenumbers, the RA and Dec
+values, the standard deviation values, the correlation value, the longitude, latitude and altitude
+values, and finally a filename to write the data to. The function is called FileFormatter_Angles.m.
+ 
+</body></html> 
+
+
+

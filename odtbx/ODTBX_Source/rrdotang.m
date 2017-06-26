@@ -27,6 +27,7 @@ function [y,H,R] = rrdotang(t,x1,x2,options)
 %   useDoppler          {true, false(default)}   can't combine w/ RangeRate
 %   useUnit             {true, false(default)}
 %   useAngles           {true, false(default)}
+%   useAngleRates       {true, false(default)}
 %   frequencyTransmit   {scalar>0, 1.57542e9}    Hz, Only for Doppler and
 %                                                measurement errors
 %   useGPSIono          {true, false(default)}   only for GPS sats as x2
@@ -106,12 +107,14 @@ function [y,H,R] = rrdotang(t,x1,x2,options)
 %                                       position only measurement types
 %   Russell Carpenter   02/10/2011      Added angles data type
 %   Ravi Mathur         08/29/2012      Extracted regression test
+%   Ryan Willmot        07/23/2015      Added angle rate capability
 
 useRange        = getOdtbxOptions(options, 'useRange', true );
 useRangeRate    = getOdtbxOptions(options, 'useRangeRate', true );
 useDoppler      = getOdtbxOptions(options, 'useDoppler', false );
 useUnit         = getOdtbxOptions(options, 'useUnit', false );
 useAngles       = getOdtbxOptions(options, 'useAngles', false );
+useAngleRates   = getOdtbxOptions(options, 'useAngleRates', false);
 
 if( useDoppler && useRangeRate)
     error('rrdotang is not designed to handle both RangeRate and Doppler at the same time')
@@ -149,6 +152,20 @@ if useAngles
     y = [y;az;el];
 end
 
+if useAngleRates
+    dr = x1(1:3,:)-x2(1:3,:); %pos diff vector
+    dv = x1(4:6,:)-x2(4:6,:); %vel diff vector
+    a = [x1(1:2,:) - x2(1:2,:); zeros(size(x2(3,:)))];
+    A = sqrt(sum(a.^2));
+    za = find(A==0);
+    b = cross(dr,repmat([0;0;1],[1 size(dr,2)]));
+    r = LOSRange(t, x1(1:3,:), x2(1:3,:), options);
+    azdot = dot(-b,dv)./A.^2;
+    eldot = A.*dv(3,:)./r.^2 - dot(a,dv).*dr(3,:)./r.^2./A;
+    azdot(za) = 0;
+    eldot(za) = 0;
+    y = [y;azdot;eldot];
+end
 % Extra Outputs
 if nargout > 1,
     H         = [];
@@ -194,7 +211,36 @@ if nargout > 1,
         Hav = zeros(size(Har));
         H = [H; [Har Hav] ];
     end
+    if ( useAngleRates )
+        [udr rho] = unit(dr);
+        a = [x1(1:2,:) - x2(1:2,:); zeros(size(x2(3,:)))];
+        b = cross(dr,repmat([0;0;1],[1 size(dr,2)]));
+        c = cross(dv,repmat([0;0;1],[1 size(dr,2)]));
+        Hvr = shiftdim(dv.*repmat(1./rho,3,1) ...
+              - dr.*repmat(dot(dr,dv)./rho.^3,3,1),-1);
+        adv = [dv(1:2,:); zeros(1,size(dr,2))];
+        A = sqrt(sum(a.^2));
+        za = find(A==0);
+        for i = 1:size(dr,2)
+            Hadotr(1,:,i) = (A(i)^2*c(:,i) + dot(b(:,i),dv(:,i))*2*a(:,i)) / A(i)^4;
+            Hadotr(2,:,i) = (rho(i)^2*dv(3,i)*(a(:,i)/A(i)) -...
+                A(i)*dv(3,i)*2*rho(i)*udr(:,i)) / rho(i)^4 - ...
+                (rho(i)^2*A(i)*(dr(3,i)*(adv(:,i) + dot(a(:,i),Hvr(:,:,i))) + ...
+                [0;0;1]*dot(a(:,i),dv(:,i))))/(rho(i)^4*A(i)^2) + ...
+                dot(a(:,i),dv(:,i))*dr(3,i)*(2*rho(i)*udr(:,i)*A(i)+...
+                rho(i)^2*(a(:,i)/A(i)))/(rho(i)^4*A(i)^2);
+        end
+        rho = repmat(rho',[1 3]);
+        Hadotr(:,:,za) = 0;
+        A = repmat(A',[1 3]);
+        Hadotv(1,:,:) = permute(-b'./A.^2,[3 2 1]);
+        Hadotv(2,:,:) = permute(cross(b,dr)'./rho.^2./A,[3 2 1]);
+        Hadotv(:,:,za) = 0;
+        Hadotv = squeeze(Hadotv);
+        H = [H; [Hadotr Hadotv]];
+    end
 end
+  
 if nargout > 2,
     %get sigma out of the options
     nMTypes      = sum([useRange useRangeRate useDoppler]); % number of types

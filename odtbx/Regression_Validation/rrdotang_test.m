@@ -21,6 +21,7 @@ function failed = rrdotang_test()
 %   Author      		Date         	Comment
 %
 %   Ravi Mathur         08/29/2012      Extracted from rrdotang.m
+%   R. Carpenter        09/04/2015      Added angle-rate test cases
 
 disp(' ')
 disp('Performing Test....')
@@ -65,9 +66,14 @@ fprintf('%4.2f %4.2f %4.2f %6.2f %4.2f %4.2f %6.2f %4.2f %4.2f %6.2f %4.2f %4.2f
 failed = any(tol < max( abs( ExMeas - y ) ));
 if failed
     disp(' ')
-    disp('Test Failed!')
+    disp('Range, Range-rate, and Angle Test Failed!')
 else
     disp(' ')
-    disp('Test Passed.')
+    disp('Range, Range-rate, and Angle Test Passed.')
 end
+
+% Additional test cases for angle-rates done in unit test framework
+testCase = rrdotang_tests;
+Results = run(testCase);
+failed = any([failed,[Results.Failed]]);
 end

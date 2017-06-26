@@ -65,21 +65,31 @@
 % Developers, 
 % modify these paths for your system.  They must be absolute paths, and 
 % don't include the trailing slash.
-%myBasePath = '/Users/ravidavi/Development/odtbx-git';
+%
+% The path to the top-level ODTBX folder (containing odtbx, vendor, ...)
+myBasePath = '/Users/ravidavi/Development/odtbx-git';
 %
 % The path to the ODTBX folder (the directory containing ODTBX_Source)
 % e.g., the clone of ssh://git.code.sf.net/p/odtbx/git
+% UNCOMMENT THIS if you are use the ODTBX repository instead of an
+% installed version of ODTBX.
 %odtbxPath = [myBasePath, '/odtbx'];
+%
+% The path to a folder containing an installed version of ODTBX. Change
+% this if you want to use JAT & Mice from an installed version of
+% ODTBX, while keeping the actual ODTBX code from odtbxPath. Some devs do
+% this so that they don't have to build JAT.
+myInstPath = myBasePath;
 %
 % The path to a specific MICE folder (the top-level folder of a MICE 
 % distribution, usually named "mice", and it contains directories like:
 % data, doc, include, lib, src, etc.
-%odtbxMicePath = [myBasePath, '/vendor/MacIntelMice_64/mice'];
+odtbxMicePath = [myInstPath, '/vendor/MacIntelMice_64/mice'];
 %
 % The path to the JAT folder that contains the source and data files
 % (the directory above jat/)
 % Some developers may choose to build their bytecode in these folders as well.
-%jatSrcPath =  [myBasePath, '/vendor/Jat'];
+jatSrcPath =  [myInstPath, '/vendor/Jat'];
 %
 % (Optional) The path to the JAT folder that contains the Java bytecode
 % (*.class files).  Most developers won't need this if they want to place
@@ -240,7 +250,7 @@ addpath(fullfile(odtbxPath,'ODTBX_Source','GMAT_Adapters'));
 addpath(fullfile(odtbxPath,'ODTBX_Source','Integrators'));
 addpath(fullfile(odtbxPath,'ODTBX_Source','meas_sched_gui'));
 addpath(fullfile(odtbxPath,'ODTBX_Source','GPS_Time_Utilities'));
-addpath(fullfile(odtbxPath,'ODTBX_Source','Integrators'));
+addpath(fullfile(odtbxPath,'ODTBX_Source','IOD'));
 addpath(fullfile(odtbxPath,'ODTBX_Examples'));
 addpath(fullfile(odtbxPath,'HTML'));
 
@@ -263,6 +273,23 @@ d = fullfile(odtbxPath,'Regression_Validation','DataFiles');
 if startuptype ~= 3 || isdir(d)
     addpath(d);
 end
+
+% Make sure MICE version is correct for MATLAB version
+miceversiontxt = fileread(fullfile(odtbxMicePath,'doc','version.txt'));
+miceversionstart = strfind(miceversiontxt, 'V.N');
+miceversionnum = str2num(miceversiontxt(miceversionstart+3:miceversionstart+6));
+mlver = ver('MATLAB');
+mlver = str2num(mlver.Version);
+if((mlver >= 9.2) && (miceversionnum < 66))
+    warning('ODTBX:MICEVersion', ['Using MATLAB R2017a or greater, but ' ...
+            'MICE version is not 66. Please download MICE v0066 or greater ' ...
+            'from <a href="http://sourceforge.net/projects/odtbx/files">ODTBX on SourceForge</a>.']);
+elseif((mlver < 9.2) && (miceversionnum >= 66))
+    warning('ODTBX:MICEVersion', ['Using MATLAB R2016b or earlier, but ' ...
+            'MICE version is 66 or greater. Please use ODTBX installer to ' ...
+            'install MICE v0064']);
+end
+clear miceversiontxt miceversionstart miceversionnum mlver;
 
 % Set Matlab paths for MICE:
 addpath(fullfile(odtbxMicePath,'doc'));
@@ -326,7 +353,7 @@ end
 
 % Clear the remnants out of the workspace to leave only the path setttings.
 clear d i p p2check pseps ;
-clear basePath jatSrcPath jatBytecodePath miceTopPath miceArch gmatPath startuptype odtbxMicePath odtbxPath myBasePath ;
+clear basePath jatSrcPath jatBytecodePath miceTopPath miceArch gmatPath startuptype odtbxMicePath odtbxPath myBasePath myInstPath;
 
 %
 %% End-User Customization Goes Below Here:

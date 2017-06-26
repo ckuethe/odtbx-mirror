@@ -30,7 +30,7 @@ function [xdot,A,Q] = polydyn(t,x,options)
 % valid for this function are:
 %
 %   PARAMETER           VALID VALUES            NOTES
-%   TR                   TriRep object          See TRIREP [km]
+%   TR                   triangulation object   See triangulation [km]
 %   RHO                  Scalar>0               Constant density [kg/m^3]
 %   RA                   0< RA <2pi RAD         Right Ascension
 %   DEC                  -pi/2< DEC <pi/2 RAD   Declination
@@ -59,6 +59,8 @@ function [xdot,A,Q] = polydyn(t,x,options)
 %   Author      		    Date         	Comment
 %   Kenneth Getzandanner    04/28/2012      Original polydyn.m
 %                           02/03/2015      Changed density to kg/m^3
+%   Ravi Mathur             05/25/2017      Changed to new delaunay
+%                                           triangulation functions
 
 %% Initialize Variables
 
@@ -83,10 +85,10 @@ sumFaceA = 0;
 sumWf = 0;
 
 % Calculate face normals, edges, and vertices
-fn = faceNormals(tr);
-ic = incenters(tr);
+fn = faceNormal(tr);
+ic = incenter(tr);
 E = edges(tr);
-V = tr.X;
+V = tr.Points;
 
 % Calculate the DCM from the inertial to the body frame
 w = options.w;
@@ -189,7 +191,7 @@ for i=size(fn,1):-1:1
     Ff = (fn(i,:)')*(fn(i,:)')';
     
     % Get face vertices
-    P = tr.X(tr(i,:),:)';
+    P = V(tr(i,:),:)';
     
     % Calculate vectors from field point to face vertices
     R1 = P(:,1)-r;

@@ -113,7 +113,7 @@ link_budget.NoiseTemp         = truth.Ts;                         % K
 link_budget.AtmAttenuation    = truth.Ae;                         % dB
 link_budget.TransPowerLevel   = truth.sv_power;                   % enum
 link_budget.TransPowerOffset  = truth.xmit_power_offset;          % truth units? gpsmeas: dB
-link_budget.GPSBlock          = 6;                                % use a GPS 2D antenna with L1, see gpsmeas
+link_budget.GPSBlock          = 7;                                % use a GPS 2D antenna with L1, see gpsmeas
 link_budget.TXAntennaMask     = truth.xmit_ant_mask;              % rad
 link_budget.ReceiverNoise     = truth.Nf;                         % dB
 link_budget.RecConversionLoss = truth.L;                          % dB
@@ -222,7 +222,7 @@ CN0_est = gps_est_cno(phys_param{1}, RX_link, TX_link, rx_pat, tx_pat);
 %% check the resulting estimated CN0
 % find the exact closest times gpsmeas used for comparison by simply
 % removing the time bias
-CN0diff = CN0_est(2,:)-AntLB{1}.HCN0(gps_meas.GPS_PRN,gpsdatind);
+CN0diff = CN0_est(2,:)-gps_meas.PRN_data{1}.raw_SNR;
 
 if abs(CN0diff) > 1e-8
     fail = 1;

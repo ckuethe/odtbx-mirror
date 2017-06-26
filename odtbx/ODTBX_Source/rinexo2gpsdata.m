@@ -186,7 +186,7 @@ while (rr.isReady && ~rr.isDone)
                 gps_data.GPS_PRN(prnind) = i;
                 gps_data.PRN_data{prnind}.epoch =       timegps(tind);
                 gps_data.PRN_data{prnind}.raw_SNR =     S1(i,tind);
-                gps_data.PRN_data{prnind}.pseudorange = C1(i,tind);
+                gps_data.PRN_data{prnind}.pseudorange = C1(i,tind)/1000;%km
                 gps_data.PRN_data{prnind}.doppler =     D1(i,tind);
                 gps_data.PRN_data{prnind}.phase =       L1(i,tind);
                 
@@ -207,7 +207,7 @@ while (rr.isReady && ~rr.isDone)
                 sameind = find(gps_data.GPS_PRN == i);
                 gps_data.PRN_data{sameind}.epoch =       [gps_data.PRN_data{sameind}.epoch       timegps(tind)];
                 gps_data.PRN_data{sameind}.raw_SNR =     [gps_data.PRN_data{sameind}.raw_SNR     S1(i,tind)];
-                gps_data.PRN_data{sameind}.pseudorange = [gps_data.PRN_data{sameind}.pseudorange C1(i,tind)];
+                gps_data.PRN_data{sameind}.pseudorange = [gps_data.PRN_data{sameind}.pseudorange C1(i,tind)/1000];%km
                 gps_data.PRN_data{sameind}.doppler =     [gps_data.PRN_data{sameind}.doppler     D1(i,tind)];
                 gps_data.PRN_data{sameind}.phase =       [gps_data.PRN_data{sameind}.phase       L1(i,tind)];
                 

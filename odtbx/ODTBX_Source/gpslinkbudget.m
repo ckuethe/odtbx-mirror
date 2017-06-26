@@ -56,20 +56,24 @@ function [CN0, Ar, At, Ad, AP, RP] = gpslinkbudget(los_mag, RX_link, TX_link, rx
 %                                   empty if given CN0 with tx_pattern, or
 %                                   can be empty if using an omni antenna
 %   rx_el           double  Nx1     receiver antenna boresight
-%                                   elevation angle (rad), optional: can be
-%                                   empty if using an omni antenna
+%                                   elevation angle (rad), in same range as
+%                                   rx_pattern, optional: can be empty if
+%                                   using an omni antenna
 %   rx_az           double  Nx1,[]  receiver antenna boresight
-%                                   azimuth angle (rad), optional: use with
-%                                   a 2D rx_pattern
+%                                   azimuth angle (rad), in same range as
+%                                   rx_pattern, optional: use with a 2D
+%                                   rx_pattern
 %
 %   tx_pattern      double  AxG,[]  transmit antenna gain pattern (deg & dB),
 %                                   NOTE: can be 1D or 2D, optional: can be
 %                                   empty if given CN0 with rx_pattern
 %   tx_el           double  Nx1     transmitter antenna boresight
-%                                   elevation angle (rad)
+%                                   elevation angle (rad), in same range as
+%                                   tx_pattern
 %   tx_az           double  Nx1,[]  transmitter antenna boresight
-%                                   azimuth angle (rad), optional: use with
-%                                   a 2D tx_pattern
+%                                   azimuth angle (rad), in same range as
+%                                   tx_pattern, optional: use with a 2D
+%                                   tx_pattern
 %   CN0             double  Nx1,[]  Signal carrier to noise ratio,
 %                                   optional: only required when either
 %                                   antenna pattern is not supplied
@@ -214,7 +218,7 @@ if have_tx
         if (~exist('tx_az','var') || isempty(tx_az))
             error('Presented 2D transmit model without azimuth angles - aborting.');
         end
-        
+
         % use both transmitter azimuth and elevation to compute gain from a
         % 2D antenna model
         At = interp2(tx_pattern(1,2:end)*pi/180,tx_pattern(2:end,1)*pi/180,tx_pattern(2:end,2:end),tx_az,tx_el,'spline');
@@ -223,6 +227,7 @@ if have_tx
         % the minimum of the max defined angle for the antenna pattern.
         anglemask = (max(tx_pattern(2:end,1)))*pi/180;  % [1,1]
     else
+        
         % use only transmitter elevation angle to compute gain from a 1D
         % antenna model
         At = interp1((tx_pattern(:,1))*pi/180,tx_pattern(:,2),tx_el,'spline');
@@ -268,6 +273,10 @@ if have_rx
 
         % Remove gains computed for angles outside the pattern
         Ar(rx_el>anglemask) = -100;
+        
+        % Remove gains masked out with nans for any reason, interp can
+        % strip the NaNs.
+        Ar(isnan(Ar)) = -100;
     end
 end
 

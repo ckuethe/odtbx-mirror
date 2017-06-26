@@ -17,6 +17,11 @@
 % NASA Goddard Space Flight Center at opensource@gsfc.nasa.gov.
 
 % Brent Wm. Barbee
+%
+%  REVISION HISTORY
+%   Author      		    Date         	Comment
+%   Ravi Mathur             05/25/2017      Relaxed xhat tolerance for
+%                                           Matlab R2017a chnages
 
 function [failed] = updatevectorized_test
 
@@ -160,7 +165,7 @@ for iest = 1:length(est)
         end
     end
     
-    dx_max = 2e-9;
+    dx_max = 4e-9;
     
     for a=1:length(xhat_c1n)
         dx = abs(xhat_c1n{a} - xhat_c1{a});
@@ -295,7 +300,7 @@ for iest = 1:length(est)
         end
     end
     
-    dx_max = 2e-9;
+    dx_max = 4e-9;
     
     for a=1:length(xhat_c2n)
         dx = abs(xhat_c2n{a} - xhat_c2{a});

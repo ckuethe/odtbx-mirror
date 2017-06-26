@@ -60,6 +60,8 @@ function [pos,vel,vel_tot,dtsv] = alm2xyz(time,alm,frame)
 %   Brent Wm. Barbee    08/14/2009         Changed warning message
 %                                          threshold from 1 day to 7 days
 %                                          and added MSGID to the warning.
+%   Jenny Valdez        07/14/2014         Check for week rollover & units
+%                                          fix in sma
 
 %*********************************************************
 % Almanac file has the following format:
@@ -72,7 +74,7 @@ function [pos,vel,vel_tot,dtsv] = alm2xyz(time,alm,frame)
 % 4        time of applicability [s]         toe
 % 5        orbital inclination (rad)         inc     
 % 6        rate of right ascension (rad/s)   OMEGA_dot
-% 7        SQRT(a) (m^1/2)                   root_a
+% 7        SQRT(A)  [km^1/2]                 root_a
 % 8        right ascension at toe (rads)     OMEGA_not
 % 9        argument of perigee (rad)         arg_peri
 % 10       mean anomaly (rad)                M_not
@@ -92,7 +94,13 @@ mm = size(alm,1);                   % number of PRNs
 % Can be used to directly compute the delta time between the current
 % time step and the almanac epoch, even across week boundaries
 t_epoch = time-alm(1,13)*7*86400;
-
+% check for week number rollover
+epoch_week = t_epoch/(7*86400);
+if epoch_week > 1024
+    warning('ODTBX:alm2xyz: assuming GPS week rollover occurred (dates after Aug. 1999) and adjusting almanac time accordingly')
+    t_epoch = time-(alm(1,13)+1024)*7*86400;
+end
+    
 % Correct OMEGA provided in almanac for ECI                                    
 if frame == 0   % ECI
     disp('ECI to ECEF conversion isn''t implimented yet')

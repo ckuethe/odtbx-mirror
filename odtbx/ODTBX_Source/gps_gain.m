@@ -45,12 +45,18 @@ function gain = gps_gain(gps_meas, phys_param, RX_link, TX_link, pattern, ant)
 %           phys_param fields:
 %       .epoch      double	1xZ	    time, UTC epoch of the measurement, as
 %                                   a MATLAB serial date, see ConvertTime
-%       .TX_az      double	1xZ     transmitter antenna azimuth angle (rad)
+%       .TX_az      double	1xZ     transmitter antenna azimuth angle
+%                                   (rad), in same range as pattern
+%                                   (usually [0,2*pi))
 %       .TX_el      double	1xZ     transmitter antenna boresight elevation
-%                                   angle (rad)
-%       .RX_az      double	1xZ     receiver antenna azimuth angle (rad)
+%                                   angle (rad), in same range as pattern
+%                                   (usually [0,pi/2])
+%       .RX_az      double	1xZ     receiver antenna azimuth angle (rad),
+%                                   in same range as pattern (usually
+%                                   [0,2*pi))
 %       .RX_el      double	1xZ     receiver antenna boresight elevation angle
-%                                   (rad)
+%                                   (rad), in same range as pattern
+%                                   (usually [0,pi/2])
 %       .range      double	1xZ     absolute value of the transmitter-receiver
 %                                   range (km)
 %       .range_rate	double	1xZ the transmitter-receiver relative
@@ -148,8 +154,8 @@ end
 % ipp = the data to use from phys_param.*(ipp)
 % igm = the data to use from gps_meas.PRN_data{prnind}.*(igm)
 % Use a 0.1 sec tolerance for the conversion
-ipp = compValsTol(phys_param.epoch, convertTime('UTC','GPS',gps_meas.PRN_data{prnind}.epoch), 0.1/86400);
-igm = compValsTol(gps_meas.PRN_data{prnind}.epoch, convertTime('GPS','UTC',phys_param.epoch), 0.1/86400);
+ipp = compValsTol(phys_param.epoch, convertTime('UTC','GPS',gps_meas.PRN_data{prnind}.epoch), 0.01/86400);
+igm = compValsTol(gps_meas.PRN_data{prnind}.epoch, convertTime('GPS','UTC',phys_param.epoch), 0.01/86400);
 
 % check: no common times
 if isempty(ipp) || isempty(igm)
@@ -159,7 +165,7 @@ if isempty(ipp) || isempty(igm)
 end
 
 CN0 = gps_meas.PRN_data{prnind}.raw_SNR(igm)';
-range = phys_param.range';
+range = phys_param.range(ipp)';
 
 gain = zeros(4,length(ipp));
 gain(1,:) = phys_param.epoch(ipp);

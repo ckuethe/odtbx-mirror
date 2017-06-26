@@ -1,4 +1,4 @@
-% CONSTANTS       - Script loads constants used in GPS/orbital sims
+% GPS_CONSTANTS Loads constants used in GPS/orbital sims
 %
 % Last modified: 5/2002
 

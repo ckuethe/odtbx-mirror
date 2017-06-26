@@ -29,6 +29,9 @@ function f = polydyn_test
 %   Kenneth Getzandanner    05/24/2012      Original polydyn_example.m
 %   Ravi Mathur             08/27/2012      Rename to conform to new
 %                                           regression test format
+%   Ravi Mathur             05/25/2017      Changed to new delaunay
+%                                           triangulation functions,
+%                                           relaxed error tolerance
 
 % Set up polyhedron
 X = [1 -.5 -.5 0 0;
@@ -44,11 +47,11 @@ ic = [mean(x);mean(y);mean(z)];
 x = x-ic(1);
 y = y-ic(2);
 z = z-ic(3);
-dt = DelaunayTri(x,y,z);
+dt = delaunayTriangulation(x,y,z);
 
-% Create TriRep object
+% Create triangulation object
 [tri, Xb] = freeBoundary(dt);
-tr = TriRep(tri, Xb);
+tr = triangulation(tri, Xb);
 
 % Define body mass, volume, and density
 volume = 1.4999e9; % m^3
@@ -98,7 +101,9 @@ toc
 load polydyn_data
 
 % Compare generated and test data
-tol = 1e-9;
+% Ravi: relaxed tolerance since Matlab R2017a produces different results
+% due to general changes in its computation engine
+tol = 1e-8;
 
 dx = abs(x-x_test);
 dA = abs(A-A_test);

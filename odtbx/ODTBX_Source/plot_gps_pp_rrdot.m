@@ -66,6 +66,8 @@ ts{2} = ['Start date: ' datestr(phys_param.epoch(1,1),31) ' UTC'];
 title(ts);
 
 subplot(2,1,2)
-plot((phys_param.epoch-phys_param.epoch(1))*24,phys_param.range_rate,'.');
-ylabel('Range Rage (km/s)');
+if ~isempty(phys_param.range_rate)
+    plot((phys_param.epoch-phys_param.epoch(1))*24,phys_param.range_rate,'.');
+end
+ylabel('Range Rate (km/s)');
 xlabel('Time (hours)');

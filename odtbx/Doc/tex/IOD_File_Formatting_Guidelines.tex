@@ -1,0 +1,64 @@
+\documentclass{article}
+\usepackage{graphicx, amssymb}
+\usepackage[letterpaper, margin=1.5in]{geometry}
+%\geometry{
+%
+%left = 1cm,
+%right = 1cm,
+%}
+
+
+%\title{Initial Orbit Determination (IOD) Application User Manual - File Formatting }
+
+
+\begin{document}
+	\pagenumbering{gobble}
+	%\maketitle
+	\newpage
+	\pagenumbering{arabic}
+	\begin{center}
+	\textbf{{\large Initial Orbit Determination (IOD) Application:}} \newline
+	\textbf{{\large File Formatting Guidelines}}
+	\end{center}
+	
+		\hspace{0.45 cm} This section details the data file formatting requirements for this application to work properly. \textbf{WARNING:} Be cautious with the units of the values in the data file. There is an 
+                expected unit for each value in the data file and failure to follow this regulation will result in erroneous orbit estimations. The file format for all scenarios follows a tabular pattern to assist with multiple 
+                observations. \newline\newline
+		The supported data file extensions are \textbf{.txt}, \textbf{.dat} and \textbf{.csv}
+			\section{Angles-Only Observations}
+				For angles-only observations, the data file format is as follows:
+			       
+			       \begin{center}
+				{\footnotesize
+			       \begin{tabular} {p{0.5 cm} p{0.75 cm} p{0.50 cm} p{1.5 cm} p{0.90 cm} p{1.10cm} p{0.80 cm} p{1.10 cm} p{0.55 cm} p{0.45 cm} p{0.55 cm} c}
+				
+				Year  & Month & Day & Time & RA & RA$\sigma$ & Dec & Dec$\sigma$ & Corr & Lat & Long & Alt\\
+				1996 & 08 & 20 & 08:30:00.115 & 118.678 & 5.73e-4 & 27.578 & 5.73e-4 & 0 & 40 & -110 & 2\\
+				1996 & 08 & 20 & 08:50:00.115 & 162.558 & 5.73e-4 & 30.030 & 5.73e-4 & 0 & 40 & -110 & 2\\
+				1996 & 08 & 20 & 09:10:00.115 & 187.791 & 5.73e-4 & 17.081 & 5.73e-4 & 0 & 40 & -110 & 2\\
+				\end{tabular}
+				}
+				\end{center}
+				
+				The above table shows the order and layout of the expected file format. Three example observations are provided, but note that the first row of labels \textbf{should not} be included in the data 	 	
+				file and is merely for reference. It is also important to note 
+				the unit expectations. RA, RA$\sigma$, Dec, Dec$\sigma$, Latitude (Lat) and Longitude (Long) are all in degrees. Altitude (Alt) should always be in km and the correlation (Corr) is unitless. 
+				Note that the right-ascension and declination values must be topocentric for geocentric orbits and geocentric for heliocentric orbits. Latitude, longitude, and altitude refer to the location of the 
+				observation site. If for example, the observation site is taken as the center of the Earth in a heliocentric inertial frame, then these values will be the same as the right ascension, declination, and range. \par
+				\textbf{WARNING:} Be careful with coordinate frames. In an intertial frame, the latitude, longitude and altitude values of the observation site are equal to right-ascension, declination and range. The RA and Dec values in the data file should be topocentric 
+				for geocentric orbits with an observation site on the surface of the Earth. The LST is used as an approximation for the inertial position vectors of the observation sites in this situation unless a direction cosine matrix is provided by the user. For heliocentric orbits, the observation site can be at any location as 
+				long as the altitude, longitude, and latitude of the observation site as well as the RA and Dec values measured from the observation site are in a heliocentric intertial frame.
+				 Be aware of this distinction if other bodies are used as the main gravitational body by selecting 'Other' as the orbit type.  The output state vector will always be given in an inertial frame centered on the gravitational body. At this time, all gravitational bodies are modeled as perfect spheres with uniform gravitational fields. \par
+
+				The number of significant digits provided is up to the user, but the observation time must always be in the format displayed with three decimal places on the seconds value. \textbf{NOTE:} Time  	 		
+				must be UT1, not UTC. Time is in the form HH:MM:SS.FFF. 
+				Latitude values should be positive for North and negative for South. Similarly, longitude values should be negative for West and positive for East. Correlation is the correlation between the RA and 		 	
+				Dec values for that observation. \par
+
+				The number of observations contained in the data file is up to the user, but there must be a \textbf{minimum of three observations} for the application to work properly.
+				All of the IOD techniques used in this application assume a default of three observations. \par
+
+				A file formatting function has been provided in the source code for the user's benefit. It takes as input an epoch as a datenumber, the observation times as datenumbers, the RA and Dec values, the 		                             
+				standard deviation values, the correlation value, the longitude, latitude and altitude values, and
+				finally a filename to write the data to. The function is called FileFormatter\_Angles.m.
+\end{document}

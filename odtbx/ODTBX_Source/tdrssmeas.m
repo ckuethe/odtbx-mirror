@@ -250,7 +250,15 @@ for n=1:length(tdrss.x)
     % assume TDRS ephem starts before and ends after user ephem
     iafter1 = find(tdrss.sat(n).tspan<=t(1),1,'last');
     ibefend = find(tdrss.sat(n).tspan>=t(end),1,'first');
-    tind2 = iafter1:ibefend;
+    
+    % If TDRS and user ephem vectors contain constant times, then iafter1
+    % may be greater than ibefend. In that case swap them.
+    if(iafter1 <= ibefend)
+        tind2 = iafter1:ibefend;
+    else
+        tind2 = ibefend:iafter1;
+    end
+    
     % t, x, and xt are restricted only to the times when tracking is done
     t1   = t(tind1);
     x1   = x(:,tind1);

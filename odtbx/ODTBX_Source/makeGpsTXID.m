@@ -59,6 +59,9 @@ if isempty(block_type)
     block_type = 1;
 end
 
-TX_ID = struct('GPS_ID',GPS_ID,'GPS_PRN',GPS_PRN,'block_type',block_type);
+% TX_ID = struct('GPS_ID',GPS_ID,'GPS_PRN',GPS_PRN,'block_type',block_type);
+TX_ID.GPS_ID = GPS_ID;
+TX_ID.GPS_PRN = GPS_PRN;
+TX_ID.block_type = block_type;
 
 end

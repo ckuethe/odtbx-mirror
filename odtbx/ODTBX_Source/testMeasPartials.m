@@ -58,8 +58,11 @@ function Hpd = testMeasPartials(datfun,datarg)
 %   Ravi Mathur         7/28/2015       Clear only estjac instead of all
 %                                       functions, which also removes any
 %                                       existing breakpoints
+%   Ravi Mathur         5/26/2017       Reverted to clear functions
 
-clear estjac % clears the persistent variables in estjac
+% Clear all persistent variables
+% This has the unfortunate side effect of removing debug breakpoints
+clear functions
 
 disp(' ')
 disp('Comparing the H matrix calculated in ')

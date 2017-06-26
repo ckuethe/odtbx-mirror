@@ -100,6 +100,9 @@ clc
 % handled by varying the test name, e.g. foo_1_test, foo_2_test, etc.
 
 testCases = {
+    % Release TBD
+%         'iod','' % Disabled since Matlab apps must be running for their
+%         functions to be available on the command line
     % Release 6.0
         'CIOTransform',''
     % Release 5.5

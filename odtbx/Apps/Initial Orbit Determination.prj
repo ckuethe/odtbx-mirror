@@ -1,0 +1,96 @@
+<deployment-project plugin="plugin.apptool" plugin-version="1.0">
+  <configuration build-checksum="1989351176" file="/Users/jrcarpe1/Developer/odtbx-internal-git/odtbx/Apps/Initial Orbit Determination.prj" location="/Users/jrcarpe1/Developer/odtbx-internal-git/odtbx/Apps" name="Initial Orbit Determination" target="target.mlapps" target-name="Package App">
+    <param.appname>Initial Orbit Determination</param.appname>
+    <param.authnamewatermark>Ryan Willmot</param.authnamewatermark>
+    <param.email>rwillmo@purdue.edu; rwillmot356@gmail.com</param.email>
+    <param.company>NASA GSFC</param.company>
+    <param.icon />
+    <param.icons />
+    <param.summary>The Initial Orbit Determination Application calculates precise initial state vectors using angles-only observations.</param.summary>
+    <param.description>The IOD Application allows for the calculation of precise initial state vectors for newly discovered orbital objects using angles-only observations. The application uses the Laplace, Gauss and Double-r methods of angles-only orbit determination and has the ability to perform sigma-point transformations to drastically improve calculation precision. The abilities of the application to calculate state vectors can be incorporated into other programs by calling the IODmain function contained within the source code. Please see the application documentation for information on installation, features, usage, examples and other aspects of the application.</param.description>
+    <param.screenshot />
+    <param.version>1.0</param.version>
+    <param.products.name>
+      <item>MATLAB</item>
+      <item>Symbolic Math Toolbox</item>
+    </param.products.name>
+    <param.products.id>
+      <item>'1'</item>
+      <item>'15'</item>
+    </param.products.id>
+    <param.products.version>
+      <item>8.5</item>
+      <item>6.2</item>
+    </param.products.version>
+    <param.platforms />
+    <param.output>${PROJECT_ROOT}/Initial Orbit Determination.mlappinstall</param.output>
+    <param.guid />
+    <unset>
+      <param.icon />
+      <param.icons />
+      <param.screenshot />
+      <param.version />
+      <param.platforms />
+    </unset>
+    <fileset.main>
+      <file>/Users/jrcarpe1/Developer/odtbx-internal-git/odtbx/ODTBX_Source/IOD/IODmainGUI.m</file>
+    </fileset.main>
+    <fileset.depfun>
+      <file>/Users/jrcarpe1/Developer/odtbx-internal-git/odtbx/ODTBX_Source/IOD/Double_r.m</file>
+      <file>/Users/jrcarpe1/Developer/odtbx-internal-git/odtbx/ODTBX_Source/IOD/Double_r_Accuracy.m</file>
+      <file>/Users/jrcarpe1/Developer/odtbx-internal-git/odtbx/ODTBX_Source/IOD/Double_r_OrbitElements.m</file>
+      <file>/Users/jrcarpe1/Developer/odtbx-internal-git/odtbx/ODTBX_Source/IOD/Double_r_RangeEstimates.m</file>
+      <file>/Users/jrcarpe1/Developer/odtbx-internal-git/odtbx/ODTBX_Source/IOD/Gauss.m</file>
+      <file>/Users/jrcarpe1/Developer/odtbx-internal-git/odtbx/ODTBX_Source/IOD/GeneralLagrange.m</file>
+      <file>/Users/jrcarpe1/Developer/odtbx-internal-git/odtbx/ODTBX_Source/IOD/Gibbs.m</file>
+      <file>/Users/jrcarpe1/Developer/odtbx-internal-git/odtbx/ODTBX_Source/IOD/Herrick_Gibbs.m</file>
+      <file>/Users/jrcarpe1/Developer/odtbx-internal-git/odtbx/ODTBX_Source/IOD/IODmain.m</file>
+      <file>/Users/jrcarpe1/Developer/odtbx-internal-git/odtbx/ODTBX_Source/IOD/IODmainGUI.fig</file>
+      <file>/Users/jrcarpe1/Developer/odtbx-internal-git/odtbx/ODTBX_Source/IOD/IODmainGUIAngles.fig</file>
+      <file>/Users/jrcarpe1/Developer/odtbx-internal-git/odtbx/ODTBX_Source/IOD/IODmainGUIAngles.m</file>
+      <file>/Users/jrcarpe1/Developer/odtbx-internal-git/odtbx/ODTBX_Source/IOD/IODmainGUISettings.fig</file>
+      <file>/Users/jrcarpe1/Developer/odtbx-internal-git/odtbx/ODTBX_Source/IOD/IODmainGUISettings.m</file>
+      <file>/Users/jrcarpe1/Developer/odtbx-internal-git/odtbx/ODTBX_Source/IOD/JDate.m</file>
+      <file>/Users/jrcarpe1/Developer/odtbx-internal-git/odtbx/ODTBX_Source/IOD/LOS_Vectors.m</file>
+      <file>/Users/jrcarpe1/Developer/odtbx-internal-git/odtbx/ODTBX_Source/IOD/LST.m</file>
+      <file>/Users/jrcarpe1/Developer/odtbx-internal-git/odtbx/ODTBX_Source/IOD/Laplace.m</file>
+      <file>/Users/jrcarpe1/Developer/odtbx-internal-git/odtbx/ODTBX_Source/IOD/OrbitPlot.m</file>
+      <file>/Users/jrcarpe1/Developer/odtbx-internal-git/odtbx/ODTBX_Source/IOD/Site_Position.m</file>
+      <file>/Users/jrcarpe1/Developer/odtbx-internal-git/odtbx/ODTBX_Source/IOD/sigpt.m</file>
+      <file>/Users/jrcarpe1/Developer/odtbx-internal-git/odtbx/ODTBX_Source/kep2cart.m</file>
+      <file>/Users/jrcarpe1/Developer/odtbx-internal-git/odtbx/ODTBX_Source/kepanom.m</file>
+      <file>/Users/jrcarpe1/Developer/odtbx-internal-git/odtbx/ODTBX_Source/kepel.m</file>
+      <file>/Users/jrcarpe1/Developer/odtbx-internal-git/odtbx/ODTBX_Source/kepprop2b.m</file>
+    </fileset.depfun>
+    <fileset.resources>
+      <file>${PROJECT_ROOT}/NASA-Logo.jpg</file>
+      <file>${PROJECT_ROOT}/earth.jpg</file>
+      <file>${PROJECT_ROOT}/sun.jpg</file>
+      <file>/Users/jrcarpe1/Developer/odtbx-internal-git/odtbx/Doc/IOD_User_Manual.pdf</file>
+    </fileset.resources>
+    <fileset.package />
+    <build-deliverables>
+      <file location="/Users/jrcarpe1/Developer/odtbx-internal-git/odtbx/Apps" name="Initial Orbit Determination.mlappinstall" optional="false">/Users/jrcarpe1/Developer/odtbx-internal-git/odtbx/Apps/Initial Orbit Determination.mlappinstall</file>
+    </build-deliverables>
+    <workflow />
+    <matlab>
+      <root>/Applications/MATLAB_R2015a.app</root>
+      <toolboxes />
+    </matlab>
+    <platform>
+      <unix>true</unix>
+      <mac>true</mac>
+      <windows>false</windows>
+      <win2k>false</win2k>
+      <winxp>false</winxp>
+      <vista>false</vista>
+      <linux>false</linux>
+      <solaris>false</solaris>
+      <osver>10.10.4</osver>
+      <os32>false</os32>
+      <os64>true</os64>
+      <arch>maci64</arch>
+      <matlab>true</matlab>
+    </platform>
+  </configuration>
+</deployment-project>

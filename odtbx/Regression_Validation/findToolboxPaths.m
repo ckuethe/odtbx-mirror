@@ -43,7 +43,7 @@ keep = {lower(strcat(fs,'toolbox',fs,'matlab',fs)) ...
 
 % the paths split into a single cell of n strings, use a large buffer
 % for boxes with lots of toolboxes
-p = textscan(path,'%s','Delimiter',pathsep,'BufSize',20480);
+p = textscan(path,'%s','Delimiter',pathsep);
 
 for i = 1:length(p{1})
     pstring = char(p{1}(i));

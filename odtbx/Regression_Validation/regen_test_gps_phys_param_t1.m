@@ -19,6 +19,10 @@
 % You should have received a copy of the NASA Open Source Agreement along
 % with this program (in a file named License.txt); if not, write to the 
 % NASA Goddard Space Flight Center at opensource@gsfc.nasa.gov.
+%
+%  REVISION HISTORY
+%   Author      		    Date         	Comment
+%   Ravi Mathur             05/24/2017      Use new OdtbxOptions format
 
 % constants
 r2d=180/pi; % rad to deg
@@ -81,36 +85,42 @@ qatt = dcm2q(R);
 % gpsmeas defines the earth radius and adds it to 'AtmosphereMask'.
 EARTH_RADIUS = JATConstant('rEarth','WGS84') / 1000;  % km Equatorial radius of Earth
 
-measOptions.('epoch')             = epoch;
-measOptions.('useRange')          = true;
-measOptions.('useRangeRate')      = false;
-measOptions.('useDoppler')        = true;
+measOptions = odtbxOptions('measurement');
+measOptions = setOdtbxOptions(measOptions,'epoch',epoch);
+measOptions = setOdtbxOptions(measOptions,'useRange',true);
+measOptions = setOdtbxOptions(measOptions,'useRange',true);
+measOptions = setOdtbxOptions(measOptions,'useRangeRate',false);
+measOptions = setOdtbxOptions(measOptions,'useDoppler',true);
+measOptions = setOdtbxOptions(measOptions,'YumaFile',yuma_file);
+measOptions = setOdtbxOptions(measOptions,'AntennaPointing',ant_point);
+measOptions = setOdtbxOptions(measOptions,'useIonosphere',false);
+measOptions = setOdtbxOptions(measOptions,'useTroposphere',false);
+measOptions = setOdtbxOptions(measOptions,'PrecnNutnExpire',0.1); % days
+measOptions = setOdtbxOptions(measOptions,'AntennaOrientation',dcm('ax2',pi/2));
+
 %rSigma (use default, no analogue in gpsdef)
-measOptions.('GPSBand')           = 'L1';
-measOptions.('YumaFile')          = yuma_file;
 %Rotation2ECI (use default, no analogue in gpsdef)
-measOptions.('AntennaPointing')   = ant_point;
-measOptions.('AntennaPattern')    = eval(ant_rx_pat);
-measOptions.('AntennaMask')       = truth.rcv_ant_mask;
-measOptions.('AtmosphereMask')    = truth.r_mask/1000 - EARTH_RADIUS; % km
-measOptions.('useiono')           = false;
-measOptions.('usetropo')          = false;
-measOptions.('NoiseTemp')         = truth.Ts;                         % K
-measOptions.('AtmAttenuation')    = truth.Ae;                         % dB
-measOptions.('TransPowerLevel')   = truth.sv_power;                   % enum
-measOptions.('TransPowerOffset')  = truth.xmit_power_offset;          % truth units? gpsmeas: dB
-measOptions.('GPSBlock')          = 6;                                % use a GPS 2D antenna with L1, see gpsmeas
-measOptions.('TransAntMask')      = truth.xmit_ant_mask;              % rad
-measOptions.('ReceiverNoise')     = truth.Nf;                         % dB
-measOptions.('RecConversionLoss') = truth.L;                          % dB
-measOptions.('SystemLoss')        = truth.As;                         % dB
-measOptions.('LNAGain')           = truth.Ga;                         % dB
-measOptions.('CableLoss')         = truth.Ac;                         % dB
-measOptions.('RecAcqThresh')      = truth.CN0_lim;                    % dB-Hz
-measOptions.('RecTrackThresh')    = truth.CN0_lim;                    % dB-Hz
-measOptions.('DynamicTrackRange') = truth.dyn_range;                  % dB
-measOptions.('PrecnNutnExpire')   = 0.1;                                % days
-measOptions.('AntennaOrientation') = dcm('ax2',pi/2);
+
+% Link budget parameters
+link_budget.GPSBand           = 'L1';
+link_budget.AntennaPattern    = eval(ant_rx_pat);
+link_budget.RXAntennaMask     = truth.rcv_ant_mask;
+link_budget.AtmosphereMask    = truth.r_mask/1000 - EARTH_RADIUS; % km
+link_budget.NoiseTemp         = truth.Ts;                         % K
+link_budget.AtmAttenuation    = truth.Ae;                         % dB
+link_budget.TransPowerLevel   = truth.sv_power;                   % enum
+link_budget.TransPowerOffset  = truth.xmit_power_offset;          % truth units? gpsmeas: dB
+link_budget.GPSBlock          = 6;                                % use a GPS 2D antenna with L1, see gpsmeas
+link_budget.TXAntennaMask     = truth.xmit_ant_mask;              % rad
+link_budget.ReceiverNoise     = truth.Nf;                         % dB
+link_budget.RecConversionLoss = truth.L;                          % dB
+link_budget.SystemLoss        = truth.As;                         % dB
+link_budget.LNAGain           = truth.Ga;                         % dB
+link_budget.CableLoss         = truth.Ac;                         % dB
+link_budget.DynamicTrackRange = truth.dyn_range;                  % dB
+link_budget.RecAcqThresh      = truth.CN0_lim;                    % dB-Hz
+link_budget.RecTrackThresh    = truth.CN0_lim;                    % dB-Hz
+measOptions = setOdtbxOptions(measOptions, 'linkbudget', link_budget);
 
 %% Call gpsmeas.
 % Note we are using the qatt as well as the AntennaOrientation with our 2D

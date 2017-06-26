@@ -98,7 +98,7 @@ measOptions = setOdtbxOptions(measOptions,'useLightTime', false);
 measOptions = setOdtbxOptions(measOptions,'relay', relay);
 
 % Load Expected Results
-% NOTE: These results are based on the most recent July 2012 leap second. If a
+% NOTE: These results are based on the most recent Jan 2017 leap second. If a
 % more recent leap second is added, then these results must be updated.
 load lnrmeas_expected.mat;
 
@@ -134,7 +134,7 @@ passed = tol > max( max( abs( y - y_expected ) ) );
 failed = ~passed;
 if failed
     disp(' ')
-    disp('Test Failed! Please verify that the most recent leap second is July 2012.')
+    disp('Test Failed! Please verify that the most recent leap second is Jan 2017.')
 else
     disp(' ')
     disp('Test Passed.')

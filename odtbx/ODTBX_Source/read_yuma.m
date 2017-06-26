@@ -88,6 +88,10 @@ while feof(fid) == 0
     if length(line)>4  &&  strcmp(line(1:4),'****')
         for count = 1:13
             line = fgetl(fid);
+            % make sure there aren't blank lines
+            if strcmp(line,'')
+                line = fgetl(fid);
+            end
             i = i+1;
             number(i) = str2num(line(27:size(line,2)));
         end
@@ -98,6 +102,23 @@ end  % while
 fclose(fid);
 
 alm = reshape(number',13,size(number,2)/13)';
+
+% Check for missing entries and pad
+if size(alm,1) ~= 32
+    for ii = 1:32
+        if ii > size(alm,1)
+            % missing entries at the end
+            alm = [alm; zeros(1,13)];
+            alm(ii,1) = ii; % record the PRN number
+            alm(ii,2) = 63; % set it un-healthy
+        elseif alm(ii,1) ~= ii
+            % missing something in the middle
+            alm = [alm(1:ii-1,:); zeros(1,13); alm(ii:end,:)];
+            alm(ii,1) = ii; % record the PRN number
+            alm(ii,2) = 63; % set it un-healthy
+        end
+    end
+end
 
 % Check for GPS week rollover, a sim date before 1980 means
 % don't bother rolling over week

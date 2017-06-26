@@ -1,0 +1,1145 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"  
+  "http://www.w3.org/TR/html4/loose.dtd">  
+<html > 
+<head><title>Initial Orbit Determination (IOD) Application User Manual </title> 
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1"> 
+<meta name="generator" content="TeX4ht (http://www.cse.ohio-state.edu/~gurari/TeX4ht/)"> 
+<meta name="originator" content="TeX4ht (http://www.cse.ohio-state.edu/~gurari/TeX4ht/)"> 
+<!-- html --> 
+<meta name="src" content="IOD_User_Manual.tex"> 
+<meta name="date" content="2015-08-06 16:57:00"> 
+<link rel="stylesheet" type="text/css" href="IOD_User_Manual.css"> 
+</head><body 
+>
+   <div class="maketitle">
+
+
+
+<h2 class="titleHead">Initial Orbit Determination (IOD) Application User
+Manual </h2>
+<div class="author" ><span 
+class="cmr-12">J. Russell Carpenter</span><span class="thank-mark"><a 
+href="#tk-1"><span 
+class="cmsy-10x-x-120">*</span></a></span><br class="and" /><span 
+class="cmr-12">Ryan Willmot </span><span class="thank-mark"><a 
+href="#tk-2"><span 
+class="cmsy-10x-x-120">&#8224;</span></a></span></div><br />
+<div class="date" ><span 
+class="cmr-12">07-30-2015</span></div>
+   <div class="thanks" ><br /><a 
+ id="tk-1"></a><span class="thank-mark"><span 
+class="cmsy-10">*</span></span>NASA GSFC, Navigation and Mission Design Branch, Code 595<br /><a 
+ id="tk-2"></a><span class="thank-mark"><span 
+class="cmsy-10">&#8224;</span></span>Purdue University School of
+Aeronautics and Astronautics</div></div>
+
+   <h3 class="likesectionHead"><a 
+ id="x1-1000"></a>Contents</h3>
+   <div class="tableofcontents">
+   <span class="sectionToc" >1 <a 
+href="#x1-20001" id="QQ2-1-2">Application Description</a></span>
+<br />   &#x00A0;<span class="subsectionToc" >1.1 <a 
+href="#x1-30001.1" id="QQ2-1-3">Features</a></span>
+<br />   &#x00A0;<span class="subsectionToc" >1.2 <a 
+href="#x1-40001.2" id="QQ2-1-4">IOD Methods</a></span>
+<br />   <span class="sectionToc" >2 <a 
+href="#x1-50002" id="QQ2-1-5">Getting Started</a></span>
+<br />   &#x00A0;<span class="subsectionToc" >2.1 <a 
+href="#x1-60002.1" id="QQ2-1-6">Installation</a></span>
+<br />   <span class="sectionToc" >3 <a 
+href="#x1-70003" id="QQ2-1-7">Function List and Descriptions</a></span>
+<br />   <span class="sectionToc" >4 <a 
+href="#x1-80004" id="QQ2-1-8">Interface and Directions</a></span>
+<br />   &#x00A0;<span class="subsectionToc" >4.1 <a 
+href="#x1-90004.1" id="QQ2-1-9">Graphical User Interface</a></span>
+<br />   &#x00A0;&#x00A0;<span class="subsubsectionToc" >4.1.1 <a 
+href="#x1-100004.1.1" id="QQ2-1-10">Angles-Only Processing</a></span>
+<br />   &#x00A0;<span class="subsectionToc" >4.2 <a 
+href="#x1-110004.2" id="QQ2-1-11">Program Interface</a></span>
+<br />   <span class="sectionToc" >5 <a 
+href="#x1-120005" id="QQ2-1-12">File Formatting</a></span>
+<br />   &#x00A0;&#x00A0;<span class="subsubsectionToc" >5.0.1 <a 
+href="#x1-130005.0.1" id="QQ2-1-13">Angles-Only</a></span>
+<br />   <span class="sectionToc" >6 <a 
+href="#x1-140006" id="QQ2-1-14">Tutorials and Examples</a></span>
+<br />   <span class="sectionToc" >7 <a 
+href="#x1-150007" id="QQ2-1-15">References</a></span>
+   </div>
+
+   <h3 class="sectionHead"><span class="titlemark">1   </span> <a 
+ id="x1-20001"></a>Application Description</h3>
+<!--l. 25--><p class="noindent" >&#x00A0;     The Initial Orbit Determination (IOD) Application is an initial orbit determination tool
+based in Matlab that provides an easy way to estimate and compare orbits using different IOD
+methods. Its primary purpose is to provide an initial orbit estimate of a satellite, asteroid or
+other orbiting body for a differential correction algorithm that can refine the estimate.
+The IOD Application utilizes three angles-only IOD techniques: Laplace, Gauss, and
+Double-r.
+<!--l. 29--><p class="indent" >   The IOD Application provides two methods of use. One method is through a graphical user
+interface (GUI) that offers an orbit visualization tool as well as advanced options such as setting
+accuracy tolerances and the number of allowed iterations for the Double-r method. The GUI does
+not allow for the output of variables into the workspace or another program. In order to have
+values output to the workspace or to another program, the program user interface will need to be
+used. This can be accessed via the function IODMain and is discussed below in the <span 
+class="cmbx-10">Interface and</span>
+<span 
+class="cmbx-10">Directions </span>section below.
+<!--l. 35--><p class="noindent" >
+   <h4 class="subsectionHead"><span class="titlemark">1.1   </span> <a 
+ id="x1-30001.1"></a>Features</h4>
+<!--l. 36--><p class="noindent" >&#x00A0;    The IOD Application&#8217;s main feature is its ability to quickly determine an initial orbit estimate
+for geocentric or heliocentric orbits given angles-only observations. With these observations stored
+in a data file that follows the file-formatting guidelines outlined in the <span 
+class="cmbx-10">File Formatting </span>section
+below, it is quite simple to use any of the three IOD methods contained in this package. The GUI
+provides a simple way to compare the three IOD methods as well as visualize an estimated
+orbit.
+<!--l. 40--><p class="indent" >   The IOD Application also has the ability to provide covariance information for the estimated
+state vector, but only through the program interface. This covariance information can be used
+in a batch-least squares estimator to further refine the solution if greater accuracy is
+required.
+<!--l. 43--><p class="indent" >   The greatest feature of the IOD Application is its ability to be easily changed or added to in
+order to meet the user&#8217;s needs. All source files have detailed header information about
+functionality, inputs and outputs, as well as a record of changes made to the file. Comments
+appear throughout each source file to clear up both programming and technical decisions made
+during creation.
+<!--l. 47--><p class="noindent" >
+   <h4 class="subsectionHead"><span class="titlemark">1.2   </span> <a 
+ id="x1-40001.2"></a>IOD Methods</h4>
+<!--l. 48--><p class="noindent" >&#x00A0;     Currently the IOD application utilizes three of the most common IOD techniques to
+provide precision initial state vectors. The Gauss, Laplace, and Double-r methods are
+all available in this application. It should be noted that each method has strengths
+and weaknesses in different situations. The Gauss method has proven to be the most
+robust method throughout testing and is recommended as the starting method for any
+new orbit determination. The Double-r method has the ability to provide the most
+accurate initial state vector, but only if the initial range estimate is close to the true
+value.
+<!--l. 52--><p class="indent" >   In order for the Double-r method to converge, the initial range estimate, the range estimation
+
+step-size, and accuracy tolerance of the calculation, Qmin, all need to be reasonable values. These
+values can be altered in the advanced settings tab of the GUI (discussed below), in the source
+code, or in the program interface with the input variable DoublerSettings (see <span 
+class="cmbx-10">Program</span>
+<span 
+class="cmbx-10">Interface </span>subsection). It can be difficult to get the Double-r method to converge by manually
+entering these values, so default values have been provided. If the Double-r method
+does not produce a solution with the default or user-defined initial range estimate, the
+Gauss method is used to form an initial range estimate which is then passed into the
+Double-r method. Please see the <span 
+class="cmbx-10">Angles-Only Processing </span>section below for more
+information.
+<!--l. 57--><p class="indent" >   The other important technique used in this application is a sigma-point transformation to
+provide more precise initial state vectors. This transformation occurs in sigpt.m in the source
+code. If standard deviation values greater than zero are provided in the data file for each
+observation, then the application will automatically perform a sigma-point transformation by
+generating a matrix of sigma points and passing them through the selected IOD method. The
+output from passing these sigma-points through the IOD method is then reformed into a state
+vector and covariance matrix.
+<!--l. 61--><p class="indent" >   This sigma-point transformation has been found to improve the reliability of the state
+vector solution as well as provide covariance information for the solution which can
+further be used in a weighted batch least-squares estimator. This transformation can
+however, cause the three IOD methods to diverge if the standard deviation values for the
+observations are large enough. It has been found that standard deviation values larger
+than 1e-6 radians can cause divergence in the Double-r method and larger than 1e-5
+radians can cause divergence in the Gauss method. If the uncertainty values for the
+observations are larger than these values, it may not be possible to perform the sigma-point
+transformation and receive a covariance matrix as an output. If this is the case, set the standard
+deviation values to zero in the data file and perform the IOD calculation as normal.
+<span 
+class="cmbx-10">Please </span>see both the <span 
+class="cmbx-10">File Formatting </span>and <span 
+class="cmbx-10">Interface and Directions </span>sections for more
+information.
+<!--l. 69--><p class="indent" >
+
+   <h3 class="sectionHead"><span class="titlemark">2   </span> <a 
+ id="x1-50002"></a>Getting Started</h3>
+<!--l. 71--><p class="noindent" >
+   <h4 class="subsectionHead"><span class="titlemark">2.1   </span> <a 
+ id="x1-60002.1"></a>Installation</h4>
+<!--l. 72--><p class="noindent" >&#x00A0;     The installation of the IOD Application is quite easy with the use of MATLAB&#8217;s
+applications feature. In order to install the graphical user interface, download the Initial Orbit
+Determination.mlappinstall file and move your current MATLAB workspace to the folder
+containing it. From the current folder window in MATLAB, double-click the install file. A
+window will appear asking you to install into My Apps. Click install and then the IOD
+Application will be accessible from the Apps tab located at the top of the MATLAB
+window. On the top bar with other applications displayed, click the black arrow on the
+right. This will give you access to all MATLAB applications currently installed. From
+this window you can double click the Initial Orbit Determination icon to open the
+GUI.
+<!--l. 77--><p class="indent" >   To access the program interface of the IOD Application, all source code will need to be
+downloaded and placed in the same directory. Once all source code has been downloaded, the
+application can be accessed by calling the IODmain function.<br 
+class="newline" /><br 
+class="newline" />
+<!--l. 79--><p class="indent" >   <span 
+class="cmbx-10">Note: </span>It is recommended that MATLAB 2015a be used with the IOD Application. Earlier
+versions of MATLAB may be incompatible with the application although it has been tested with
+versions as early as 2013a.
+
+   <h3 class="sectionHead"><span class="titlemark">3   </span> <a 
+ id="x1-70003"></a>Function List and Descriptions</h3>
+<!--l. 82--><p class="noindent" >Below is a list of every function included in the IOD Application along with a short description of
+each. Please see the header of a function for more on the inputs, outputs and calculation methods
+specific to that function.
+<div class="center" 
+>
+<!--l. 84--><p class="noindent" >
+<div class="tabular"> <table id="TBL-2" class="tabular" 
+cellspacing="0" cellpadding="0" rules="groups" 
+><colgroup id="TBL-2-1g"><col 
+id="TBL-2-1"></colgroup><colgroup id="TBL-2-2g"><col 
+id="TBL-2-2"></colgroup><tr 
+class="hline"><td><hr></td><td><hr></td></tr><tr  
+ style="vertical-align:baseline;" id="TBL-2-1-"><td  style="white-space:wrap; text-align:left;" id="TBL-2-1-1"  
+class="td11"><!--l. 87--><p class="noindent" ><span 
+class="cmbx-10">Function</span>                  </td><td  style="white-space:wrap; text-align:left;" id="TBL-2-1-2"  
+class="td11"><!--l. 87--><p class="noindent" ><span 
+class="cmbx-10">Description</span>                                                       </td>
+</tr><tr 
+class="hline"><td><hr></td><td><hr></td></tr><tr  
+ style="vertical-align:baseline;" id="TBL-2-2-"><td  style="white-space:wrap; text-align:left;" id="TBL-2-2-1"  
+class="td11"><!--l. 88--><p class="noindent" >Double_r                       </td><td  style="white-space:wrap; text-align:left;" id="TBL-2-2-2"  
+class="td11"><!--l. 88--><p class="noindent" >Double-r method of angles-only initial orbit determination   </td>
+</tr><tr 
+class="hline"><td><hr></td><td><hr></td></tr><tr  
+ style="vertical-align:baseline;" id="TBL-2-3-"><td  style="white-space:wrap; text-align:left;" id="TBL-2-3-1"  
+class="td11"><!--l. 89--><p class="noindent" >Double_r_Accuracy         </td><td  style="white-space:wrap; text-align:left;" id="TBL-2-3-2"  
+class="td11"><!--l. 89--><p class="noindent" >Determination of the accurcacy of a computed orbit using the
+Double-r IOD method                                                   </td>
+</tr><tr 
+class="hline"><td><hr></td><td><hr></td></tr><tr  
+ style="vertical-align:baseline;" id="TBL-2-4-"><td  style="white-space:wrap; text-align:left;" id="TBL-2-4-1"  
+class="td11"><!--l. 90--><p class="noindent" >Double_r_OrbitalElements</td><td  style="white-space:wrap; text-align:left;" id="TBL-2-4-2"  
+class="td11"><!--l. 90--><p class="noindent" >Orbital elements calculation for Double-r method               </td></tr><tr 
+class="hline"><td><hr></td><td><hr></td></tr><tr  
+ style="vertical-align:baseline;" id="TBL-2-5-"><td  style="white-space:wrap; text-align:left;" id="TBL-2-5-1"  
+class="td11"><!--l. 91--><p class="noindent" >Double_r_RangeEstimates </td><td  style="white-space:wrap; text-align:left;" id="TBL-2-5-2"  
+class="td11"><!--l. 91--><p class="noindent" >Initial range estimator using cone-masking technique from
+GTDS (Reference 3)                                                     </td>
+</tr><tr 
+class="hline"><td><hr></td><td><hr></td></tr><tr  
+ style="vertical-align:baseline;" id="TBL-2-6-"><td  style="white-space:wrap; text-align:left;" id="TBL-2-6-1"  
+class="td11"><!--l. 92--><p class="noindent" >FileFormatter_Angles       </td><td  style="white-space:wrap; text-align:left;" id="TBL-2-6-2"  
+class="td11"><!--l. 92--><p class="noindent" >File formatting function that takes in data and writes to a file
+according to file formatting guidelines                              </td>
+</tr><tr 
+class="hline"><td><hr></td><td><hr></td></tr><tr  
+ style="vertical-align:baseline;" id="TBL-2-7-"><td  style="white-space:wrap; text-align:left;" id="TBL-2-7-1"  
+class="td11"><!--l. 93--><p class="noindent" >Gauss                           </td><td  style="white-space:wrap; text-align:left;" id="TBL-2-7-2"  
+class="td11"><!--l. 93--><p class="noindent" >Gauss method of angles-only initial orbit determination       </td>
+</tr><tr 
+class="hline"><td><hr></td><td><hr></td></tr><tr  
+ style="vertical-align:baseline;" id="TBL-2-8-"><td  style="white-space:wrap; text-align:left;" id="TBL-2-8-1"  
+class="td11"><!--l. 94--><p class="noindent" >GeneralLagrange             </td><td  style="white-space:wrap; text-align:left;" id="TBL-2-8-2"  
+class="td11"><!--l. 94--><p class="noindent" >Generic Lagrange Interpolation                                       </td>
+</tr><tr 
+class="hline"><td><hr></td><td><hr></td></tr><tr  
+ style="vertical-align:baseline;" id="TBL-2-9-"><td  style="white-space:wrap; text-align:left;" id="TBL-2-9-1"  
+class="td11"><!--l. 95--><p class="noindent" >Gibbs                           </td><td  style="white-space:wrap; text-align:left;" id="TBL-2-9-2"  
+class="td11"><!--l. 95--><p class="noindent" >Gibbs method of velocity determination given three position
+vectors                                                                       </td>
+</tr><tr 
+class="hline"><td><hr></td><td><hr></td></tr><tr  
+ style="vertical-align:baseline;" id="TBL-2-10-"><td  style="white-space:wrap; text-align:left;" id="TBL-2-10-1"  
+class="td11"><!--l. 96--><p class="noindent" >Herrick_Gibbs                </td><td  style="white-space:wrap; text-align:left;" id="TBL-2-10-2"  
+class="td11"><!--l. 96--><p class="noindent" >Herrick-Gibss method of velocity determination given three
+position vectors                                                            </td>
+</tr><tr 
+class="hline"><td><hr></td><td><hr></td></tr><tr  
+ style="vertical-align:baseline;" id="TBL-2-11-"><td  style="white-space:wrap; text-align:left;" id="TBL-2-11-1"  
+class="td11"><!--l. 97--><p class="noindent" >IODmain                       </td><td  style="white-space:wrap; text-align:left;" id="TBL-2-11-2"  
+class="td11"><!--l. 97--><p class="noindent" >Main file for IOD application                                          </td>
+</tr><tr 
+class="hline"><td><hr></td><td><hr></td></tr><tr  
+ style="vertical-align:baseline;" id="TBL-2-12-"><td  style="white-space:wrap; text-align:left;" id="TBL-2-12-1"  
+class="td11"><!--l. 98--><p class="noindent" >IODmainGUI                 </td><td  style="white-space:wrap; text-align:left;" id="TBL-2-12-2"  
+class="td11"><!--l. 98--><p class="noindent" >Main GUI file for IOD application                                   </td>
+</tr><tr 
+class="hline"><td><hr></td><td><hr></td></tr><tr  
+ style="vertical-align:baseline;" id="TBL-2-13-"><td  style="white-space:wrap; text-align:left;" id="TBL-2-13-1"  
+class="td11"><!--l. 99--><p class="noindent" >IODmainGUIAngles        </td><td  style="white-space:wrap; text-align:left;" id="TBL-2-13-2"  
+class="td11"><!--l. 99--><p class="noindent" >GUI for angles-only calculation and visualization                </td>
+</tr><tr 
+class="hline"><td><hr></td><td><hr></td></tr><tr  
+ style="vertical-align:baseline;" id="TBL-2-14-"><td  style="white-space:wrap; text-align:left;" id="TBL-2-14-1"  
+class="td11"><!--l. 100--><p class="noindent" >IODmainGUISettings       </td><td  style="white-space:wrap; text-align:left;" id="TBL-2-14-2"  
+class="td11"><!--l. 100--><p class="noindent" >GUI for angles-only advanced settings                              </td>
+</tr><tr 
+class="hline"><td><hr></td><td><hr></td></tr><tr  
+ style="vertical-align:baseline;" id="TBL-2-15-"><td  style="white-space:wrap; text-align:left;" id="TBL-2-15-1"  
+class="td11"><!--l. 101--><p class="noindent" >JDate                           </td><td  style="white-space:wrap; text-align:left;" id="TBL-2-15-2"  
+class="td11"><!--l. 101--><p class="noindent" >Julian Date calculation                                                  </td>
+</tr><tr 
+class="hline"><td><hr></td><td><hr></td></tr><tr  
+ style="vertical-align:baseline;" id="TBL-2-16-"><td  style="white-space:wrap; text-align:left;" id="TBL-2-16-1"  
+class="td11"><!--l. 102--><p class="noindent" >Laplace                         </td><td  style="white-space:wrap; text-align:left;" id="TBL-2-16-2"  
+class="td11"><!--l. 102--><p class="noindent" >Laplace&#8217;s method of angles-only initial orbit determination   </td>
+</tr><tr 
+class="hline"><td><hr></td><td><hr></td></tr><tr  
+ style="vertical-align:baseline;" id="TBL-2-17-"><td  style="white-space:wrap; text-align:left;" id="TBL-2-17-1"  
+class="td11"><!--l. 103--><p class="noindent" >LOS_Vectors                  </td><td  style="white-space:wrap; text-align:left;" id="TBL-2-17-2"  
+class="td11"><!--l. 103--><p class="noindent" >Calculation of Line-of-Site-Vectors                                   </td>
+</tr><tr 
+class="hline"><td><hr></td><td><hr></td></tr><tr  
+ style="vertical-align:baseline;" id="TBL-2-18-"><td  style="white-space:wrap; text-align:left;" id="TBL-2-18-1"  
+class="td11"><!--l. 104--><p class="noindent" >LST                             </td><td  style="white-space:wrap; text-align:left;" id="TBL-2-18-2"  
+class="td11"><!--l. 104--><p class="noindent" >Local Sidereal Time calculation                                       </td>
+</tr><tr 
+class="hline"><td><hr></td><td><hr></td></tr><tr  
+ style="vertical-align:baseline;" id="TBL-2-19-"><td  style="white-space:wrap; text-align:left;" id="TBL-2-19-1"  
+class="td11"><!--l. 105--><p class="noindent" >OrbitPlot                      </td><td  style="white-space:wrap; text-align:left;" id="TBL-2-19-2"  
+class="td11"><!--l. 105--><p class="noindent" >Creates a 3-D plot of an Earth orbit trajectory                  </td>
+</tr><tr 
+class="hline"><td><hr></td><td><hr></td></tr><tr  
+ style="vertical-align:baseline;" id="TBL-2-20-"><td  style="white-space:wrap; text-align:left;" id="TBL-2-20-1"  
+class="td11"><!--l. 106--><p class="noindent" >sigpt                             </td><td  style="white-space:wrap; text-align:left;" id="TBL-2-20-2"  
+class="td11"><!--l. 106--><p class="noindent" >Sigma Point Transformation (Unscented Transformation)     </td>
+</tr><tr 
+class="hline"><td><hr></td><td><hr></td></tr><tr  
+ style="vertical-align:baseline;" id="TBL-2-21-"><td  style="white-space:wrap; text-align:left;" id="TBL-2-21-1"  
+class="td11"><!--l. 107--><p class="noindent" >Site_Position                  </td><td  style="white-space:wrap; text-align:left;" id="TBL-2-21-2"  
+class="td11"><!--l. 107--><p class="noindent" >Calculation of observation site position vector                    </td>
+</tr><tr 
+class="hline"><td><hr></td><td><hr></td></tr><tr  
+ style="vertical-align:baseline;" id="TBL-2-22-"><td  style="white-space:wrap; text-align:left;" id="TBL-2-22-1"  
+class="td11">                      </td></tr></table></div><br 
+class="newline" /><br 
+class="newline" /><span 
+class="cmbx-10">Table 1: </span>IOD application function list and descriptions.</div>
+<!--l. 113--><p class="indent" >   The IOD Application also uses a number of functions pulled from the Orbit Determination
+Toolbox (ODTBX) developed by NASA Goddard Space Flight Center. Below is a list of those
+functions along with a short description. Please refer to the ODTBX documentation for further
+information on these functions.
+<div class="center" 
+>
+<!--l. 116--><p class="noindent" >
+<div class="tabular"> <table id="TBL-3" class="tabular" 
+cellspacing="0" cellpadding="0" rules="groups" 
+><colgroup id="TBL-3-1g"><col 
+id="TBL-3-1"></colgroup><colgroup id="TBL-3-2g"><col 
+id="TBL-3-2"></colgroup><tr 
+class="hline"><td><hr></td><td><hr></td></tr><tr  
+ style="vertical-align:baseline;" id="TBL-3-1-"><td  style="white-space:wrap; text-align:left;" id="TBL-3-1-1"  
+class="td11"><!--l. 119--><p class="noindent" ><span 
+class="cmbx-10">Function</span>                  </td><td  style="white-space:wrap; text-align:left;" id="TBL-3-1-2"  
+class="td11"><!--l. 119--><p class="noindent" ><span 
+class="cmbx-10">Description</span>                                                       </td>
+</tr><tr 
+class="hline"><td><hr></td><td><hr></td></tr><tr  
+ style="vertical-align:baseline;" id="TBL-3-2-"><td  style="white-space:wrap; text-align:left;" id="TBL-3-2-1"  
+class="td11"><!--l. 120--><p class="noindent" >kepel                            </td><td  style="white-space:wrap; text-align:left;" id="TBL-3-2-2"  
+class="td11"><!--l. 120--><p class="noindent" >Compute Keplerian orbital elements from Cartesian states   </td>
+</tr><tr 
+class="hline"><td><hr></td><td><hr></td></tr><tr  
+ style="vertical-align:baseline;" id="TBL-3-3-"><td  style="white-space:wrap; text-align:left;" id="TBL-3-3-1"  
+class="td11"><!--l. 121--><p class="noindent" >kepprob2b                     </td><td  style="white-space:wrap; text-align:left;" id="TBL-3-3-2"  
+class="td11"><!--l. 121--><p class="noindent" >Propagates Keplerian elements using 2-body dynamics         </td>
+</tr><tr 
+class="hline"><td><hr></td><td><hr></td></tr><tr  
+ style="vertical-align:baseline;" id="TBL-3-4-"><td  style="white-space:wrap; text-align:left;" id="TBL-3-4-1"  
+class="td11"><!--l. 122--><p class="noindent" >kep2cart                        </td><td  style="white-space:wrap; text-align:left;" id="TBL-3-4-2"  
+class="td11"><!--l. 122--><p class="noindent" >Convert Keplerian orbital elements to cartesian states         </td>
+</tr><tr 
+class="hline"><td><hr></td><td><hr></td></tr><tr  
+ style="vertical-align:baseline;" id="TBL-3-5-"><td  style="white-space:wrap; text-align:left;" id="TBL-3-5-1"  
+class="td11">                      </td></tr></table></div><br 
+class="newline" /><br 
+class="newline" /><span 
+class="cmbx-10">Table 2: </span>Functions from ODTBX used in IOD application.</div>
+<!--l. 127--><p class="noindent" >
+
+   <h3 class="sectionHead"><span class="titlemark">4   </span> <a 
+ id="x1-80004"></a>Interface and Directions</h3>
+<!--l. 129--><p class="noindent" >&#x00A0;    The IOD Application comes with two interface options. There is a graphical user interface
+(GUI) that can be accessed by installing the application package and running from the &#8217;APPS&#8217; tab
+in MATLAB. There is also a main function that can be called from the command window or
+another program if output is needed for additional analysis. The two sub-sections below detail
+each interface, providing more information on layout, accessibility, input requirements and output
+options.
+   <h4 class="subsectionHead"><span class="titlemark">4.1   </span> <a 
+ id="x1-90004.1"></a>Graphical User Interface</h4>
+<!--l. 133--><p class="noindent" >&#x00A0;    The Graphical User Interface used by the IOD Application is intended to provide orbit
+estimation information in a user-friendly format. <span 
+class="cmbx-10">WARNING: </span>Different versions of MATLAB
+have been known to display GUI information differently. The sizing ratios of text boxes and
+windows can be altered leading to some text being cut off. If you are using an earlier version of
+MATLAB than 2015a, it is possible that the GUI&#8217;s appearance may differ from what is shown in
+this document.
+<!--l. 136--><p class="indent" >   Included in the GUI are error messages for invalid data files, options for output
+units, the option of orbit visualization, as well as an advanced settings window which
+gives the user more control over the calculation methods. On the next page there is a
+screenshot of the main GUI that appears first when the application is initiated (Figure 1).
+<br 
+class="newline" /><br 
+class="newline" />
+<div class="center" 
+>
+<!--l. 141--><p class="noindent" >
+<!--l. 142--><p class="noindent" ><img 
+src="ApplicationMainScreenshot.png" alt="PIC"  
+>
+<!--l. 144--><p class="noindent" ><span 
+class="cmbx-10">Figure 1</span>: Main GUI at startup of application. <br 
+class="newline" />
+</div>
+<!--l. 147--><p class="indent" >   The above screenshot shows the simple design of the GUI. On the main screen, the <span 
+class="cmbx-10">Data</span>
+<span 
+class="cmbx-10">Type </span>option is associated with the type of observational data contained in your data file.
+Currently the application only supports angles-only observations, but may have the ability to
+support range, azimuth and elevation observations as well as range and range-rate processing in
+future releases. The <span 
+class="cmbx-10">Orbit Type </span>option allows for the selection of a heliocentric, geocentric, or
+user-defined &#8217;Other&#8217; orbit. Always check that the correct option is selected, otherwise results will
+be incorrect. If the &#8217;Other&#8217; option is selected for the <span 
+class="cmbx-10">Orbit Type</span>, two small input text boxes will
+appear. Input the radius of the gravitational body and the gravitational parameter
+that should be used in all calculations. This allows for the analysis of orbits around
+bodies other than the Earth and Sun. <span 
+class="cmbx-10">WARNING: </span>If &#8217;Other&#8217; is chosen as the orbit
+type, be sure that the data entered into the data file is relative to a body fixed intertial
+frame. This will ensure that the output state vector will be given in the same body fixed
+frame.
+<!--l. 154--><p class="indent" >   The <span 
+class="cmbx-10">File Selection </span>section is where a data file can be loaded into the application. By clicking
+
+the <span 
+class="cmbx-10">Load Data File </span>button, a file selection dialog box will open and the data file can be selected.
+Note that clicking the <span 
+class="cmbx-10">File Formatting Guidelines </span>button will open the file formatting
+guidelines as they appear in this document. Please see the File Formatting section below for
+formatting guidelines.
+<!--l. 157--><p class="indent" >   After selecting the correct file, hit the <span 
+class="cmbx-10">NEXT </span>button to proceed. Two things will happen
+when the <span 
+class="cmbx-10">NEXT </span>button is pressed. First, the data file that was selected will be scanned for
+proper formatting. If the file is not formatted correctly, an error dialog box will appear and you
+will be asked to reformat the file according to formatting guidelines. You will not be able to
+proceed until the data file is formatted correctly. If the data file is formatted correctly, a second
+GUI window will appear. This new GUI window is where calculation and visualization
+occurs.
+<!--l. 161--><p class="noindent" >
+   <h5 class="subsubsectionHead"><span class="titlemark">4.1.1   </span> <a 
+ id="x1-100004.1.1"></a>Angles-Only Processing</h5>
+<!--l. 163--><p class="noindent" >&#x00A0;     For angles-only observations (right ascension and declination), the following calculation and
+visualization GUI window will appear when the <span 
+class="cmbx-10">NEXT </span>button is pressed: <br 
+class="newline" />
+<div class="center" 
+>
+<!--l. 168--><p class="noindent" >
+<!--l. 169--><p class="noindent" ><img 
+src="ApplicationAnglesScreenshot.png" alt="PIC"  
+>
+<!--l. 170--><p class="noindent" ><span 
+class="cmbx-9">Figure 2</span><span 
+class="cmr-9">: Angles-Only calculation and visualization window. </span><br 
+class="newline" /></div>
+<!--l. 173--><p class="indent" >   The <span 
+class="cmbx-10">Calculation Method </span>panel allows for the selection of which IOD method will be used to
+formulate the initial estimate of the orbit. The <span 
+class="cmbx-10">Visualization </span>panel controls the Orbit Trajectory
+Plot to the right. For calculations that take a large number of iterations, it is recommended that
+the visualization feature is turned off as this will improve the speed of the calculation. This 3-D
+plot can be rotated using the rotate figure icon located in the top toolbar. <span 
+class="cmbx-10">NOTE: </span>For
+heliocentric orbits, the sun is scaled to 50 times larger than its actual size so that it can be easily
+seen.
+<!--l. 177--><p class="indent" >   The <span 
+class="cmbx-10">Unit Selection </span>panel alters the units of the initial estimations at the bottom of the page.
+As is displayed, the default output units are km for length and s for time.
+<!--l. 179--><p class="indent" >   The estimated position vector and velocity vector at the second observation time provided in
+the data file along with the Keplerian orbital elements are displayed at the bottom
+of the window. The number of iterations required to converge on a solution is also
+displayed.
+<!--l. 182--><p class="indent" >   Finally, the <span 
+class="cmbx-10">Advanced Settings </span>button will open a new GUI window where advanced options
+may be changed within the application. Below is a screenshot of the window that will appear when
+the button is clicked (Figure 3).
+<div class="center" 
+>
+<!--l. 185--><p class="noindent" >
+
+<!--l. 186--><p class="noindent" ><img 
+src="ApplicationAdvancedSettingsScreenshot.png" alt="PIC"  
+>
+
+<!--l. 188--><p class="noindent" ><span 
+class="cmbx-9">Figure 3</span><span 
+class="cmr-9">: Advanced Settings window for Angles-only processing.</span><br 
+class="newline" /></div>
+<!--l. 191--><p class="indent" >   In the above figure, you can see that there are only advanced options for the Double-r IOD
+method at this time. A short description of these values is provided below, but it is recommended
+that you consult reference 3 (GTDS) for more information on the cone-masking technique before
+altering these values.
+<!--l. 194--><p class="indent" >   The <span 
+class="cmbx-10">Initial Range Estimate </span>is a very important value for the success of the Double-r
+method. This value is the starting point for a cone-masking technique that attempts to find an
+accurate inital range estimate of the orbiting object at the second observation time. Setting this
+value too low will result in the solution taking many iterations to converge which could take a long
+time. Setting this value too high will result in the solution being passed over altogether. The value
+is defaulted at 1 ER for geocentric orbits and 0.75 AU for heliocentric orbits. If you are not sure
+what value to enter here, either leave the default value provided, or be conservative and estimate a
+low value.
+<!--l. 200--><p class="indent" >   The <span 
+class="cmbx-10">Accuracy Tolerance, Qmin </span>is also associated with the cone-masking technique used to
+find a good initial range estimate for the second observation time. The value sets the lower bound
+on the allowed accuracy of the inital range estimate. This value does not need to be changed
+unless the solution diverges at its default value. If the solution diverges, the Qmin value may be
+too small for the cone-masking technique.
+<!--l. 204--><p class="indent" >   The <span 
+class="cmbx-10">Range Estimator Step Size </span>controls the search sensitivity of the cone-masking
+technique. If this value is too large, it is possible to jump right over the correct solution. If this
+value is too small, the number of search levels required to find a good initial estimate will be large
+and the calculation time will increase. The default values are 1 ER for geocentric orbits and 1 SR
+(sun radius) for heliocentric orbit. Again it is advised that the default values be used for most
+scenarios. For low Earth obits (LEOs), it is recommended that the step size be decreased to 50
+km.
+<!--l. 208--><p class="indent" >   The <span 
+class="cmbx-10">Step Size Reduction Factor </span>and <span 
+class="cmbx-10">Number of Search Levels </span>are also associated with
+the cone-masking technique. The reduction factor simply reduces the step size as a solution is
+approached. The default value is 2 for both geocentric and heliocentric orbits. The number of
+search levels dictates how far out from the given initial estimate the cone-masking
+technique searches. At the default 20 levels, if a solution diverges, it is very unlikely that a
+solution will be found with more levels unless the initial estimate was very far off from
+the true value. Increasing this value will only increase calculation time for diverging
+solutions.
+<!--l. 212--><p class="indent" >   The <span 
+class="cmbx-10">Number of Iterations </span>simply controls the number of allowable iterations used in the
+newton method to converge on a solution. The newton method used in the Double-r method
+takes the initial estimate from the cone-masking technique and refines the answer even
+morer.
+<!--l. 216--><p class="noindent" >
+   <h4 class="subsectionHead"><span class="titlemark">4.2   </span> <a 
+ id="x1-110004.2"></a>Program Interface</h4>
+<!--l. 218--><p class="noindent" >&#x00A0;     If the initial state vector estimation or covariance are needed for computational purposes in
+another program, it is best to access the IOD application through the main program file
+IODmain.m. This main interface serves the purpose of sending information to other functions in
+the suite, organizing information that is sent to it by other functions, and returning
+useful information to its caller. The proper way to call this function is by issuing the
+
+following command in the MATLAB command window or in a different MATLAB file:
+<br 
+class="newline" />
+<div class="center" 
+>
+<!--l. 222--><p class="noindent" >
+<!--l. 223--><p class="noindent" >[r2, v2, P, Iterations] = IODmain(filename, calcMethod, muType, DoublerSettings, mu, R,
+cosMatrix)</div>
+<!--l. 226--><p class="noindent" >
+<!--l. 228--><p class="indent" >   <span 
+class="cmbx-10">Inputs </span>for the main function are as follows:
+     <ol  class="enumerate1" >
+     <li 
+  class="enumerate" id="x1-11002x1">filename - A string of the exact name of the data file including extension
+     </li>
+     <li 
+  class="enumerate" id="x1-11004x2">calcMethod - A string of the calculation method (Laplace, Gauss or Double-r)
+     </li>
+     <li 
+  class="enumerate" id="x1-11006x3">muType - A string of the type of orbit being analyzed (&#8217;Sun&#8217; for heliocentric, &#8217;Earth&#8217;
+     for geocentric, &#8217;Other&#8217; for user-defined orbit)
+     </li>
+     <li 
+  class="enumerate" id="x1-11008x4">DoublerSettings - Structure with double-r settings and tolerances. Same as advanced
+     settings tab in GUI.
+     </li>
+     <li 
+  class="enumerate" id="x1-11010x5">mu - A user-defined gravitational parameter (<span 
+class="cmmi-10">km</span><sup><span 
+class="cmr-7">3</span></sup><span 
+class="cmmi-10">&#x2215;s</span><sup><span 
+class="cmr-7">2</span></sup>)
+     </li>
+     <li 
+  class="enumerate" id="x1-11012x6">R - A user-defined radius of the gravitational body (km)
+     </li>
+     <li 
+  class="enumerate" id="x1-11014x7">cosMatrix  -  A  direction  cosine  matrix  that  transforms  from  the  Earth-Centered
+     Earth-Fixed frame (ECEF) to the Earth-Centered Inertial frame (ECI). <br 
+class="newline" /></li></ol>
+<!--l. 240--><p class="indent" >   The last four inputs are optional, and if no direction cosine matrix is provided when analyzing
+a geocentric orbit, ECI position vectors representing the observation site locations are
+approximated using the local sidereal times. If you select an orbit type of &#8217;Other&#8217;, you must input
+double-r settings, a gravitational parameter, and a radius of the gravitational body. If you are not
+using the double-r method with an orbit type of &#8217;Other&#8217;, input an empty structure for
+DoublerSettings.<br 
+class="newline" /><br 
+class="newline" />
+<!--l. 244--><p class="indent" >   The structure elements of DoublerSettings are as follows:
+     <ol  class="enumerate1" >
+     <li 
+  class="enumerate" id="x1-11016x1">.r2o - Initial range estimate (km for geocentric, AU for heliocentric)
+     </li>
+     <li 
+  class="enumerate" id="x1-11018x2">.h2 - Range step size (km for geocentric, AU for heliocentric)
+
+     </li>
+     <li 
+  class="enumerate" id="x1-11020x3">.Qmin - Accuracy tolerance on initial range estimation
+     </li>
+     <li 
+  class="enumerate" id="x1-11022x4">.h2reducFactor - Step size reduction factor
+     </li>
+     <li 
+  class="enumerate" id="x1-11024x5">.Levels - Number of search levels for cone-maskign technique
+     </li>
+     <li 
+  class="enumerate" id="x1-11026x6">.Iterations - Allowable iterations for Double-r method <br 
+class="newline" /></li></ol>
+<!--l. 255--><p class="indent" >   Any structure elements left empty in DoublerSettings will be assigned a default value.
+<br 
+class="newline" /><br 
+class="newline" />
+<!--l. 257--><p class="indent" >   <span 
+class="cmbx-10">Outputs </span>of the main function are as follows:
+     <ol  class="enumerate1" >
+     <li 
+  class="enumerate" id="x1-11028x1">r2 - The estimated position vector of the orbiting body (km)
+     </li>
+     <li 
+  class="enumerate" id="x1-11030x2">v2 - The estimated velocity vector of the orbiting body (km/s)
+     </li>
+     <li 
+  class="enumerate" id="x1-11032x3">P - The covariance matrix (6x6) for the position and velocity vectors
+     </li>
+     <li 
+  class="enumerate" id="x1-11034x4">Iterations - The number of iterations it took to reach a solution <br 
+class="newline" /></li></ol>
+<!--l. 266--><p class="indent" >   Note that the units of r2 will always be km and that the units of v2 will always be km/s from
+this function as there is no option to change units like in the GUI. r2 and v2 are 3x1 column
+vectors. The covariance matrix, P, will be a 6x6 matrix unless zero is provided as the standard
+deviation values for RA and Dec in which case it will be returned as NaN (see File Formatting
+section below). The covariance is based on the structure of a column vector where r2 is stacked on
+top of v2 [r2; v2]. The number of iterations will also be returned as NaN if standard deviation
+values are provided since the sigma-point transformation cannot keep track of iterations at this
+time.
+<!--l. 270--><p class="indent" >   In order to alter the advanced settings of the Double-r method as is done with the <span 
+class="cmbx-10">Advanced</span>
+<span 
+class="cmbx-10">Settings </span>button in the GUI, the source code must be altered. The changeable values for the
+Double-r method can be found in Double_r.m and Double_r_RangeEstimates.m
+<!--l. 272--><p class="noindent" >
+   <h3 class="sectionHead"><span class="titlemark">5   </span> <a 
+ id="x1-120005"></a>File Formatting</h3>
+<!--l. 273--><p class="noindent" >&#x00A0;     This section details the data file formatting requirements for this application to work
+properly. <span 
+class="cmbx-10">WARNING: </span>Be cautious with the units of the values in the data file. There is an
+expected unit for each value in the data file and failure to follow this regulation will result in
+
+erroneous orbit estimations. The file format for all scenarios follows a tabular pattern to assist
+with multiple observations. <br 
+class="newline" /><br 
+class="newline" />The supported data file extensions are <span 
+class="cmbx-10">.txt</span>, <span 
+class="cmbx-10">.dat </span>and <span 
+class="cmbx-10">.csv</span>
+   <h5 class="subsubsectionHead"><span class="titlemark">5.0.1   </span> <a 
+ id="x1-130005.0.1"></a>Angles-Only</h5>
+<!--l. 278--><p class="noindent" >For angles-only observations, the data file format is as follows:
+<div class="center" 
+>
+<!--l. 280--><p class="noindent" >
+<div class="tabular"> <table id="TBL-4" class="tabular" 
+cellspacing="0" cellpadding="0"  
+><colgroup id="TBL-4-1g"><col 
+id="TBL-4-1"><col 
+id="TBL-4-2"><col 
+id="TBL-4-3"><col 
+id="TBL-4-4"><col 
+id="TBL-4-5"><col 
+id="TBL-4-6"><col 
+id="TBL-4-7"><col 
+id="TBL-4-8"><col 
+id="TBL-4-9"><col 
+id="TBL-4-10"><col 
+id="TBL-4-11"><col 
+id="TBL-4-12"></colgroup><tr  
+ style="vertical-align:baseline;" id="TBL-4-1-"><td  style="white-space:wrap; text-align:left;" id="TBL-4-1-1"  
+class="td11"><!--l. 284--><p class="noindent" ><span 
+class="cmr-8">Year</span> </td><td  style="white-space:wrap; text-align:left;" id="TBL-4-1-2"  
+class="td11"><!--l. 284--><p class="noindent" ><span 
+class="cmr-8">Month</span> </td><td  style="white-space:wrap; text-align:left;" id="TBL-4-1-3"  
+class="td11"><!--l. 284--><p class="noindent" ><span 
+class="cmr-8">Day</span> </td><td  style="white-space:wrap; text-align:left;" id="TBL-4-1-4"  
+class="td11"><!--l. 284--><p class="noindent" ><span 
+class="cmr-8">Time</span>        </td><td  style="white-space:wrap; text-align:left;" id="TBL-4-1-5"  
+class="td11"><!--l. 284--><p class="noindent" ><span 
+class="cmr-8">RA</span>     </td><td  style="white-space:wrap; text-align:left;" id="TBL-4-1-6"  
+class="td11"><!--l. 284--><p class="noindent" ><span 
+class="cmr-8">RA</span><span 
+class="cmmi-8">&#x03C3;</span>    </td><td  style="white-space:wrap; text-align:left;" id="TBL-4-1-7"  
+class="td11"><!--l. 284--><p class="noindent" ><span 
+class="cmr-8">Dec</span>   </td><td  style="white-space:wrap; text-align:left;" id="TBL-4-1-8"  
+class="td11"><!--l. 284--><p class="noindent" ><span 
+class="cmr-8">Dec</span><span 
+class="cmmi-8">&#x03C3;</span>    </td><td  style="white-space:wrap; text-align:left;" id="TBL-4-1-9"  
+class="td11"><!--l. 284--><p class="noindent" ><span 
+class="cmr-8">Corr</span> </td><td  style="white-space:wrap; text-align:left;" id="TBL-4-1-10"  
+class="td11"><!--l. 284--><p class="noindent" ><span 
+class="cmr-8">Lat</span> </td><td  style="white-space:wrap; text-align:left;" id="TBL-4-1-11"  
+class="td11"><!--l. 284--><p class="noindent" ><span 
+class="cmr-8">Long</span> </td><td  style="white-space:nowrap; text-align:center;" id="TBL-4-1-12"  
+class="td11"><span 
+class="cmr-8">Alt</span></td>
+</tr><tr  
+ style="vertical-align:baseline;" id="TBL-4-2-"><td  style="white-space:wrap; text-align:left;" id="TBL-4-2-1"  
+class="td11"><!--l. 285--><p class="noindent" ><span 
+class="cmr-8">1996</span></td><td  style="white-space:wrap; text-align:left;" id="TBL-4-2-2"  
+class="td11"><!--l. 285--><p class="noindent" ><span 
+class="cmr-8">08</span>     </td><td  style="white-space:wrap; text-align:left;" id="TBL-4-2-3"  
+class="td11"><!--l. 285--><p class="noindent" ><span 
+class="cmr-8">20</span>  </td><td  style="white-space:wrap; text-align:left;" id="TBL-4-2-4"  
+class="td11"><!--l. 285--><p class="noindent" ><span 
+class="cmr-8">08:30:00.115</span> </td><td  style="white-space:wrap; text-align:left;" id="TBL-4-2-5"  
+class="td11"><!--l. 285--><p class="noindent" ><span 
+class="cmr-8">118.678</span> </td><td  style="white-space:wrap; text-align:left;" id="TBL-4-2-6"  
+class="td11"><!--l. 285--><p class="noindent" ><span 
+class="cmr-8">5.73e-4</span>  </td><td  style="white-space:wrap; text-align:left;" id="TBL-4-2-7"  
+class="td11"><!--l. 285--><p class="noindent" ><span 
+class="cmr-8">27.578</span> </td><td  style="white-space:wrap; text-align:left;" id="TBL-4-2-8"  
+class="td11"><!--l. 285--><p class="noindent" ><span 
+class="cmr-8">5.73e-4</span>  </td><td  style="white-space:wrap; text-align:left;" id="TBL-4-2-9"  
+class="td11"><!--l. 285--><p class="noindent" ><span 
+class="cmr-8">0</span>    </td><td  style="white-space:wrap; text-align:left;" id="TBL-4-2-10"  
+class="td11"><!--l. 285--><p class="noindent" ><span 
+class="cmr-8">40</span>  </td><td  style="white-space:wrap; text-align:left;" id="TBL-4-2-11"  
+class="td11"><!--l. 285--><p class="noindent" ><span 
+class="cmr-8">-110</span></td><td  style="white-space:nowrap; text-align:center;" id="TBL-4-2-12"  
+class="td11"> <span 
+class="cmr-8">2 </span></td>
+</tr><tr  
+ style="vertical-align:baseline;" id="TBL-4-3-"><td  style="white-space:wrap; text-align:left;" id="TBL-4-3-1"  
+class="td11"><!--l. 286--><p class="noindent" ><span 
+class="cmr-8">1996</span></td><td  style="white-space:wrap; text-align:left;" id="TBL-4-3-2"  
+class="td11"><!--l. 286--><p class="noindent" ><span 
+class="cmr-8">08</span>     </td><td  style="white-space:wrap; text-align:left;" id="TBL-4-3-3"  
+class="td11"><!--l. 286--><p class="noindent" ><span 
+class="cmr-8">20</span>  </td><td  style="white-space:wrap; text-align:left;" id="TBL-4-3-4"  
+class="td11"><!--l. 286--><p class="noindent" ><span 
+class="cmr-8">08:50:00.115</span> </td><td  style="white-space:wrap; text-align:left;" id="TBL-4-3-5"  
+class="td11"><!--l. 286--><p class="noindent" ><span 
+class="cmr-8">162.558</span> </td><td  style="white-space:wrap; text-align:left;" id="TBL-4-3-6"  
+class="td11"><!--l. 286--><p class="noindent" ><span 
+class="cmr-8">5.73e-4</span>  </td><td  style="white-space:wrap; text-align:left;" id="TBL-4-3-7"  
+class="td11"><!--l. 286--><p class="noindent" ><span 
+class="cmr-8">30.030</span> </td><td  style="white-space:wrap; text-align:left;" id="TBL-4-3-8"  
+class="td11"><!--l. 286--><p class="noindent" ><span 
+class="cmr-8">5.73e-4</span>  </td><td  style="white-space:wrap; text-align:left;" id="TBL-4-3-9"  
+class="td11"><!--l. 286--><p class="noindent" ><span 
+class="cmr-8">0</span>    </td><td  style="white-space:wrap; text-align:left;" id="TBL-4-3-10"  
+class="td11"><!--l. 286--><p class="noindent" ><span 
+class="cmr-8">40</span>  </td><td  style="white-space:wrap; text-align:left;" id="TBL-4-3-11"  
+class="td11"><!--l. 286--><p class="noindent" ><span 
+class="cmr-8">-110</span></td><td  style="white-space:nowrap; text-align:center;" id="TBL-4-3-12"  
+class="td11"> <span 
+class="cmr-8">2 </span></td>
+</tr><tr  
+ style="vertical-align:baseline;" id="TBL-4-4-"><td  style="white-space:wrap; text-align:left;" id="TBL-4-4-1"  
+class="td11"><!--l. 287--><p class="noindent" ><span 
+class="cmr-8">1996</span></td><td  style="white-space:wrap; text-align:left;" id="TBL-4-4-2"  
+class="td11"><!--l. 287--><p class="noindent" ><span 
+class="cmr-8">08</span>     </td><td  style="white-space:wrap; text-align:left;" id="TBL-4-4-3"  
+class="td11"><!--l. 287--><p class="noindent" ><span 
+class="cmr-8">20</span>  </td><td  style="white-space:wrap; text-align:left;" id="TBL-4-4-4"  
+class="td11"><!--l. 287--><p class="noindent" ><span 
+class="cmr-8">09:10:00.115</span> </td><td  style="white-space:wrap; text-align:left;" id="TBL-4-4-5"  
+class="td11"><!--l. 287--><p class="noindent" ><span 
+class="cmr-8">187.791</span> </td><td  style="white-space:wrap; text-align:left;" id="TBL-4-4-6"  
+class="td11"><!--l. 287--><p class="noindent" ><span 
+class="cmr-8">5.73e-4</span>  </td><td  style="white-space:wrap; text-align:left;" id="TBL-4-4-7"  
+class="td11"><!--l. 287--><p class="noindent" ><span 
+class="cmr-8">17.081</span> </td><td  style="white-space:wrap; text-align:left;" id="TBL-4-4-8"  
+class="td11"><!--l. 287--><p class="noindent" ><span 
+class="cmr-8">5.73e-4</span>  </td><td  style="white-space:wrap; text-align:left;" id="TBL-4-4-9"  
+class="td11"><!--l. 287--><p class="noindent" ><span 
+class="cmr-8">0</span>    </td><td  style="white-space:wrap; text-align:left;" id="TBL-4-4-10"  
+class="td11"><!--l. 287--><p class="noindent" ><span 
+class="cmr-8">40</span>  </td><td  style="white-space:wrap; text-align:left;" id="TBL-4-4-11"  
+class="td11"><!--l. 287--><p class="noindent" ><span 
+class="cmr-8">-110</span></td><td  style="white-space:nowrap; text-align:center;" id="TBL-4-4-12"  
+class="td11"> <span 
+class="cmr-8">2 </span></td>
+</tr><tr  
+ style="vertical-align:baseline;" id="TBL-4-5-"><td  style="white-space:wrap; text-align:left;" id="TBL-4-5-1"  
+class="td11">    </td></tr></table></div></div>
+<!--l. 292--><p class="indent" >   The above table shows the order and layout of the expected file format. Three example
+observations are provided, but note that the first row of labels <span 
+class="cmbx-10">should not </span>be included in the data
+file and is merely for reference. It is also important to note the unit expectations. RA, RA<span 
+class="cmmi-10">&#x03C3;</span>, Dec,
+Dec<span 
+class="cmmi-10">&#x03C3;</span>, Latitude (Lat) and Longitude (Long) are all in degrees. Altitude (Alt) should
+always be in km and the correlation (Corr) is unitless. Note that the right-ascension and
+declination values must be topocentric for geocentric orbits and geocentric for heliocentric
+orbits. Latitude, longitude, and altitude refer to the location of the observation site. If
+for example, the observation site is taken as the center of the Earth in a heliocentric
+inertial frame, then these values will be the same as the right ascension, declination, and
+range.
+<!--l. 297--><p class="indent" >   <span 
+class="cmbx-10">WARNING: </span>Be careful with coordinate frames. In an intertial frame, the latitude, longitude
+and altitude values of the observation site are equal to right-ascension, declination and
+range. The RA and Dec values in the data file should be topocentric for geocentric
+orbits with an observation site on the surface of the Earth. The LST is used as an
+approximation for the inertial position vectors of the observation sites in this situation
+unless a direction cosine matrix is provided by the user. For heliocentric orbits, the
+observation site can be at any location as long as the altitude, longitude, and latitude of the
+observation site as well as the RA and Dec values measured from the observation site are in a
+heliocentric intertial frame. Be aware of this distinction if other bodies are used as the
+main gravitational body by selecting &#8217;Other&#8217; as the orbit type. The output state vector
+will always be given in an inertial frame centered on the gravitational body. At this
+time, all gravitational bodies are modeled as perfect spheres with uniform gravitational
+fields.
+<!--l. 302--><p class="indent" >   The number of significant digits provided is up to the user, but the observation time must
+always be in the format displayed with three decimal places on the seconds value. <span 
+class="cmbx-10">NOTE: </span>Time
+must be UT1, not UTC. Time is in the form HH:MM:SS.FFF. Latitude values should be positive
+for North and negative for South. Similarly, longitude values should be negative for West and
+positive for East. Correlation is the correlation between the RA and Dec values for that
+observation.
+<!--l. 307--><p class="indent" >   The number of observations contained in the data file is up to the user, but there must be a
+<span 
+class="cmbx-10">minimum of three observations </span>for the application to work properly. All of the IOD
+techniques used in this application assume a default of three observations.
+
+<!--l. 310--><p class="indent" >   A file formatting function has been provided in the source code for the user&#8217;s benefit. It takes
+as input an epoch as a datenumber, the observation times as datenumbers, the RA and Dec
+values, the standard deviation values, the correlation value, the longitude, latitude
+and altitude values, and finally a filename to write the data to. The function is called
+FileFormatter_Angles.m.
+<!--l. 314--><p class="noindent" >
+   <h3 class="sectionHead"><span class="titlemark">6   </span> <a 
+ id="x1-140006"></a>Tutorials and Examples</h3>
+<!--l. 315--><p class="noindent" >&#x00A0;     A number of example data files have been provided for asteroid, Earth satellite and planetary
+orbits. The satellite examples were pulled from Der (Reference 2) and Vallado (Reference 4). The
+asteroid orbits were manually generated and the planetary orbits were also pulled from Der. These
+examples are intended to provide guidance for following proper file formatting procedures, as well
+as demonstrate the diverse functionality of the IOD Application. Some of the example data files
+have zero for the standard deviation values for at least one observation to avoid the use of the
+sigma-point transformation while others include nonzero standard deviation values so that the
+sigma-point transformation is performed. The nonzero standard deviation values included
+in some data files is 5.729577951308233e-04 degrees which is equal to 1e-6 radians,
+a value that will not cause the solution to diverge while performing the sigma point
+transformation.
+<!--l. 320--><p class="indent" >   Below is a list of the included examples, a short description of each, and the necessary
+conditions for the Double-r method to converge on its own without an initial range estimate from
+the Gauss method. These conditions were changed in the Advanced Settings tab of the GUI before
+running the Double-r method. If a value does not appear in the table below, then it was left at its
+default value.
+<div class="center" 
+>
+<!--l. 323--><p class="noindent" >
+
+<div class="tabular"> <table id="TBL-5" class="tabular" 
+cellspacing="0" cellpadding="0" rules="groups" 
+><colgroup id="TBL-5-1g"><col 
+id="TBL-5-1"></colgroup><colgroup id="TBL-5-2g"><col 
+id="TBL-5-2"></colgroup><colgroup id="TBL-5-3g"><col 
+id="TBL-5-3"></colgroup><colgroup id="TBL-5-4g"><col 
+id="TBL-5-4"></colgroup><tr 
+class="hline"><td><hr></td><td><hr></td><td><hr></td><td><hr></td></tr><tr  
+ style="vertical-align:baseline;" id="TBL-5-1-"><td  style="white-space:wrap; text-align:left;" id="TBL-5-1-1"  
+class="td11"><!--l. 326--><p class="noindent" ><span 
+class="cmbx-10">Example</span>           </td><td  style="white-space:wrap; text-align:left;" id="TBL-5-1-2"  
+class="td11"><!--l. 326--><p class="noindent" ><span 
+class="cmbx-10">Description</span>                      </td><td  style="white-space:wrap; text-align:left;" id="TBL-5-1-3"  
+class="td11"><!--l. 326--><p class="noindent" ><span 
+class="cmbx-10">Initial</span>
+<span 
+class="cmbx-10">Range</span>       </td><td  style="white-space:wrap; text-align:left;" id="TBL-5-1-4"  
+class="td11"><!--l. 326--><p class="noindent" ><span 
+class="cmbx-10">Step   Size,</span>
+<span 
+class="cmbx-10">Qmin*</span>      </td>
+</tr><tr 
+class="hline"><td><hr></td><td><hr></td><td><hr></td><td><hr></td></tr><tr  
+ style="vertical-align:baseline;" id="TBL-5-2-"><td  style="white-space:wrap; text-align:left;" id="TBL-5-2-1"  
+class="td11"><!--l. 327--><p class="noindent" ><span 
+class="cmbx-10">Satellites</span>           </td><td  style="white-space:wrap; text-align:left;" id="TBL-5-2-2"  
+class="td11"><!--l. 327--><p class="noindent" >                           </td><td  style="white-space:wrap; text-align:left;" id="TBL-5-2-3"  
+class="td11"><!--l. 327--><p class="noindent" >           </td><td  style="white-space:wrap; text-align:left;" id="TBL-5-2-4"  
+class="td11"><!--l. 327--><p class="noindent" >           </td></tr><tr 
+class="hline"><td><hr></td><td><hr></td><td><hr></td><td><hr></td></tr><tr  
+ style="vertical-align:baseline;" id="TBL-5-3-"><td  style="white-space:wrap; text-align:left;" id="TBL-5-3-1"  
+class="td11"><!--l. 328--><p class="noindent" >GEO </td><td  style="white-space:wrap; text-align:left;" id="TBL-5-3-2"  
+class="td11"><!--l. 328--><p class="noindent" >Geostationary orbit </td><td  style="white-space:wrap; text-align:left;" id="TBL-5-3-3"  
+class="td11"><!--l. 328--><p class="noindent" >6378.137 km </td><td  style="white-space:wrap; text-align:left;" id="TBL-5-3-4"  
+class="td11"><!--l. 328--><p class="noindent" >6378.137 km</td>
+</tr><tr 
+class="hline"><td><hr></td><td><hr></td><td><hr></td><td><hr></td></tr><tr  
+ style="vertical-align:baseline;" id="TBL-5-4-"><td  style="white-space:wrap; text-align:left;" id="TBL-5-4-1"  
+class="td11"><!--l. 329--><p class="noindent" >HEO                    </td><td  style="white-space:wrap; text-align:left;" id="TBL-5-4-2"  
+class="td11"><!--l. 329--><p class="noindent" >Retrograde orbit with 125 degree
+inclination                             </td><td  style="white-space:wrap; text-align:left;" id="TBL-5-4-3"  
+class="td11"><!--l. 329--><p class="noindent" >6378.137 km </td><td  style="white-space:wrap; text-align:left;" id="TBL-5-4-4"  
+class="td11"><!--l. 329--><p class="noindent" >6378.137 km </td>
+</tr><tr 
+class="hline"><td><hr></td><td><hr></td><td><hr></td><td><hr></td></tr><tr  
+ style="vertical-align:baseline;" id="TBL-5-5-"><td  style="white-space:wrap; text-align:left;" id="TBL-5-5-1"  
+class="td11"><!--l. 330--><p class="noindent" >MEO1                  </td><td  style="white-space:wrap; text-align:left;" id="TBL-5-5-2"  
+class="td11"><!--l. 330--><p class="noindent" >First  of  three  medium  Earth
+orbits                                   </td><td  style="white-space:wrap; text-align:left;" id="TBL-5-5-3"  
+class="td11"><!--l. 330--><p class="noindent" >6378.137 km </td><td  style="white-space:wrap; text-align:left;" id="TBL-5-5-4"  
+class="td11"><!--l. 330--><p class="noindent" >500 km       </td>
+</tr><tr 
+class="hline"><td><hr></td><td><hr></td><td><hr></td><td><hr></td></tr><tr  
+ style="vertical-align:baseline;" id="TBL-5-6-"><td  style="white-space:wrap; text-align:left;" id="TBL-5-6-1"  
+class="td11"><!--l. 331--><p class="noindent" >MEO2                  </td><td  style="white-space:wrap; text-align:left;" id="TBL-5-6-2"  
+class="td11"><!--l. 331--><p class="noindent" >Second  of  three  medium  Earth
+orbits                                   </td><td  style="white-space:wrap; text-align:left;" id="TBL-5-6-3"  
+class="td11"><!--l. 331--><p class="noindent" >6378.137 km </td><td  style="white-space:wrap; text-align:left;" id="TBL-5-6-4"  
+class="td11"><!--l. 331--><p class="noindent" >100 km       </td>
+</tr><tr 
+class="hline"><td><hr></td><td><hr></td><td><hr></td><td><hr></td></tr><tr  
+ style="vertical-align:baseline;" id="TBL-5-7-"><td  style="white-space:wrap; text-align:left;" id="TBL-5-7-1"  
+class="td11"><!--l. 332--><p class="noindent" >MEO3                  </td><td  style="white-space:wrap; text-align:left;" id="TBL-5-7-2"  
+class="td11"><!--l. 332--><p class="noindent" >Third  of  three  medium  Earth
+orbits                                   </td><td  style="white-space:wrap; text-align:left;" id="TBL-5-7-3"  
+class="td11"><!--l. 332--><p class="noindent" >10000 km    </td><td  style="white-space:wrap; text-align:left;" id="TBL-5-7-4"  
+class="td11"><!--l. 332--><p class="noindent" >100        km,
+Qmin = 350 </td>
+</tr><tr 
+class="hline"><td><hr></td><td><hr></td><td><hr></td><td><hr></td></tr><tr  
+ style="vertical-align:baseline;" id="TBL-5-8-"><td  style="white-space:wrap; text-align:left;" id="TBL-5-8-1"  
+class="td11"><!--l. 333--><p class="noindent" >Molniya                </td><td  style="white-space:wrap; text-align:left;" id="TBL-5-8-2"  
+class="td11"><!--l. 333--><p class="noindent" >Highly elliptical molniya orbit   </td><td  style="white-space:wrap; text-align:left;" id="TBL-5-8-3"  
+class="td11"><!--l. 333--><p class="noindent" >6378.137 km </td><td  style="white-space:wrap; text-align:left;" id="TBL-5-8-4"  
+class="td11"><!--l. 333--><p class="noindent" >6378.137 km </td>
+</tr><tr 
+class="hline"><td><hr></td><td><hr></td><td><hr></td><td><hr></td></tr><tr  
+ style="vertical-align:baseline;" id="TBL-5-9-"><td  style="white-space:wrap; text-align:left;" id="TBL-5-9-1"  
+class="td11"><!--l. 334--><p class="noindent" >Vallado2               </td><td  style="white-space:wrap; text-align:left;" id="TBL-5-9-2"  
+class="td11"><!--l. 334--><p class="noindent" >Orbit from Vallado 2nd Edition,
+pg. 425. Orbit data from 1996   </td><td  style="white-space:wrap; text-align:left;" id="TBL-5-9-3"  
+class="td11"><!--l. 334--><p class="noindent" >10000 km    </td><td  style="white-space:wrap; text-align:left;" id="TBL-5-9-4"  
+class="td11"><!--l. 334--><p class="noindent" >1000      km,
+Qmin = 250 </td>
+</tr><tr 
+class="hline"><td><hr></td><td><hr></td><td><hr></td><td><hr></td></tr><tr  
+ style="vertical-align:baseline;" id="TBL-5-10-"><td  style="white-space:wrap; text-align:left;" id="TBL-5-10-1"  
+class="td11"><!--l. 335--><p class="noindent" >Vallado4               </td><td  style="white-space:wrap; text-align:left;" id="TBL-5-10-2"  
+class="td11"><!--l. 335--><p class="noindent" >Orbit from Vallado 4th Edition,
+pg. 447. Orbit data from 2012   </td><td  style="white-space:wrap; text-align:left;" id="TBL-5-10-3"  
+class="td11"><!--l. 335--><p class="noindent" >6378.137 km </td><td  style="white-space:wrap; text-align:left;" id="TBL-5-10-4"  
+class="td11"><!--l. 335--><p class="noindent" >1000 km      </td>
+</tr><tr 
+class="hline"><td><hr></td><td><hr></td><td><hr></td><td><hr></td></tr><tr  
+ style="vertical-align:baseline;" id="TBL-5-11-"><td  style="white-space:wrap; text-align:left;" id="TBL-5-11-1"  
+class="td11"><!--l. 336--><p class="noindent" ><span 
+class="cmbx-10">Planets</span>             </td><td  style="white-space:wrap; text-align:left;" id="TBL-5-11-2"  
+class="td11"><!--l. 336--><p class="noindent" >                           </td><td  style="white-space:wrap; text-align:left;" id="TBL-5-11-3"  
+class="td11"><!--l. 336--><p class="noindent" >           </td><td  style="white-space:wrap; text-align:left;" id="TBL-5-11-4"  
+class="td11"><!--l. 336--><p class="noindent" >           </td>
+</tr><tr 
+class="hline"><td><hr></td><td><hr></td><td><hr></td><td><hr></td></tr><tr  
+ style="vertical-align:baseline;" id="TBL-5-12-"><td  style="white-space:wrap; text-align:left;" id="TBL-5-12-1"  
+class="td11"><!--l. 337--><p class="noindent" >Jupiter                 </td><td  style="white-space:wrap; text-align:left;" id="TBL-5-12-2"  
+class="td11"><!--l. 337--><p class="noindent" >Jupiter  orbit  data  from  DE405
+ephemeris in 1990                   </td><td  style="white-space:wrap; text-align:left;" id="TBL-5-12-3"  
+class="td11"><!--l. 337--><p class="noindent" >5 AU          </td><td  style="white-space:wrap; text-align:left;" id="TBL-5-12-4"  
+class="td11"><!--l. 337--><p class="noindent" >0.05      AU,
+Qmin=1000 </td>
+</tr><tr 
+class="hline"><td><hr></td><td><hr></td><td><hr></td><td><hr></td></tr><tr  
+ style="vertical-align:baseline;" id="TBL-5-13-"><td  style="white-space:wrap; text-align:left;" id="TBL-5-13-1"  
+class="td11"><!--l. 338--><p class="noindent" >Saturn                  </td><td  style="white-space:wrap; text-align:left;" id="TBL-5-13-2"  
+class="td11"><!--l. 338--><p class="noindent" >Saturn  orbit  data  from  DE405
+ephemeris in 2012                   </td><td  style="white-space:wrap; text-align:left;" id="TBL-5-13-3"  
+class="td11"><!--l. 338--><p class="noindent" >9 AU          </td><td  style="white-space:wrap; text-align:left;" id="TBL-5-13-4"  
+class="td11"><!--l. 338--><p class="noindent" >0.05 AU      </td>
+</tr><tr 
+class="hline"><td><hr></td><td><hr></td><td><hr></td><td><hr></td></tr><tr  
+ style="vertical-align:baseline;" id="TBL-5-14-"><td  style="white-space:wrap; text-align:left;" id="TBL-5-14-1"  
+class="td11"><!--l. 339--><p class="noindent" ><span 
+class="cmbx-10">Asteroids</span>           </td><td  style="white-space:wrap; text-align:left;" id="TBL-5-14-2"  
+class="td11"><!--l. 339--><p class="noindent" >                           </td><td  style="white-space:wrap; text-align:left;" id="TBL-5-14-3"  
+class="td11"><!--l. 339--><p class="noindent" >           </td><td  style="white-space:wrap; text-align:left;" id="TBL-5-14-4"  
+class="td11"><!--l. 339--><p class="noindent" >           </td>
+</tr><tr 
+class="hline"><td><hr></td><td><hr></td><td><hr></td><td><hr></td></tr><tr  
+ style="vertical-align:baseline;" id="TBL-5-15-"><td  style="white-space:wrap; text-align:left;" id="TBL-5-15-1"  
+class="td11"><!--l. 340--><p class="noindent" >short_ephem          </td><td  style="white-space:wrap; text-align:left;" id="TBL-5-15-2"  
+class="td11"><!--l. 340--><p class="noindent" >Short      ephemeris      of      7
+observations                           </td><td  style="white-space:wrap; text-align:left;" id="TBL-5-15-3"  
+class="td11"><!--l. 340--><p class="noindent" >1.3 AU        </td><td  style="white-space:wrap; text-align:left;" id="TBL-5-15-4"  
+class="td11"><!--l. 340--><p class="noindent" >0.05 AU      </td>
+</tr><tr 
+class="hline"><td><hr></td><td><hr></td><td><hr></td><td><hr></td></tr><tr  
+ style="vertical-align:baseline;" id="TBL-5-16-"><td  style="white-space:wrap; text-align:left;" id="TBL-5-16-1"  
+class="td11"><!--l. 341--><p class="noindent" >medium_ephem      </td><td  style="white-space:wrap; text-align:left;" id="TBL-5-16-2"  
+class="td11"><!--l. 341--><p class="noindent" >Medium    ephemeris    of    12
+observations                           </td><td  style="white-space:wrap; text-align:left;" id="TBL-5-16-3"  
+class="td11"><!--l. 341--><p class="noindent" >0.75 AU      </td><td  style="white-space:wrap; text-align:left;" id="TBL-5-16-4"  
+class="td11"><!--l. 341--><p class="noindent" >0.0047 AU   </td>
+</tr><tr 
+class="hline"><td><hr></td><td><hr></td><td><hr></td><td><hr></td></tr><tr  
+ style="vertical-align:baseline;" id="TBL-5-17-"><td  style="white-space:wrap; text-align:left;" id="TBL-5-17-1"  
+class="td11"><!--l. 342--><p class="noindent" >long_ephem           </td><td  style="white-space:wrap; text-align:left;" id="TBL-5-17-2"  
+class="td11"><!--l. 342--><p class="noindent" >Long      ephemeris      of      17
+observations                           </td><td  style="white-space:wrap; text-align:left;" id="TBL-5-17-3"  
+class="td11"><!--l. 342--><p class="noindent" >0.75 AU      </td><td  style="white-space:wrap; text-align:left;" id="TBL-5-17-4"  
+class="td11"><!--l. 342--><p class="noindent" >0.0047 AU   </td>
+</tr><tr 
+class="hline"><td><hr></td><td><hr></td><td><hr></td><td><hr></td></tr><tr  
+ style="vertical-align:baseline;" id="TBL-5-18-"><td  style="white-space:wrap; text-align:left;" id="TBL-5-18-1"  
+class="td11">                 </td></tr></table></div><br 
+class="newline" /><br 
+class="newline" /><span 
+class="cmbx-10">Table 3: </span>IOD examples included in IOD application.</div>
+<!--l. 347--><p class="noindent" >*If Qmin is not listed for a particular example, its value was left at the default value of 150 for
+geocentric orbits and 3000 for heliocentric orbits.
+
+<!--l. 349--><p class="indent" >   Table 4 below shows the true state vector solution for each of the examples in Table
+3.
+<div class="center" 
+>
+<!--l. 351--><p class="noindent" >
+<div class="tabular"> <table id="TBL-6" class="tabular" 
+cellspacing="0" cellpadding="0" rules="groups" 
+><colgroup id="TBL-6-1g"><col 
+id="TBL-6-1"></colgroup><colgroup id="TBL-6-2g"><col 
+id="TBL-6-2"></colgroup><colgroup id="TBL-6-3g"><col 
+id="TBL-6-3"></colgroup><tr 
+class="hline"><td><hr></td><td><hr></td><td><hr></td></tr><tr  
+ style="vertical-align:baseline;" id="TBL-6-1-"><td  style="white-space:wrap; text-align:left;" id="TBL-6-1-1"  
+class="td11"><!--l. 354--><p class="noindent" ><span 
+class="cmbx-10">Example</span>           </td><td  style="white-space:wrap; text-align:left;" id="TBL-6-1-2"  
+class="td11"><!--l. 354--><p class="noindent" ><span 
+class="cmbx-10">Position Vector</span>                 </td><td  style="white-space:wrap; text-align:left;" id="TBL-6-1-3"  
+class="td11"><!--l. 354--><p class="noindent" ><span 
+class="cmbx-10">Velocity Vector</span>                 </td>
+</tr><tr 
+class="hline"><td><hr></td><td><hr></td><td><hr></td></tr><tr  
+ style="vertical-align:baseline;" id="TBL-6-2-"><td  style="white-space:wrap; text-align:left;" id="TBL-6-2-1"  
+class="td11"><!--l. 355--><p class="noindent" ><span 
+class="cmbx-10">Satellites</span>           </td><td  style="white-space:wrap; text-align:left;" id="TBL-6-2-2"  
+class="td11"><!--l. 355--><p class="noindent" >km                                       </td><td  style="white-space:wrap; text-align:left;" id="TBL-6-2-3"  
+class="td11"><!--l. 355--><p class="noindent" >km/s                                    </td>
+</tr><tr 
+class="hline"><td><hr></td><td><hr></td><td><hr></td></tr><tr  
+ style="vertical-align:baseline;" id="TBL-6-3-"><td  style="white-space:wrap; text-align:left;" id="TBL-6-3-1"  
+class="td11"><!--l. 356--><p class="noindent" >GEO                    </td><td  style="white-space:wrap; text-align:left;" id="TBL-6-3-2"  
+class="td11"><!--l. 356--><p class="noindent" >[40325.23, 12355.73, -153.49]     </td><td  style="white-space:wrap; text-align:left;" id="TBL-6-3-3"  
+class="td11"><!--l. 356--><p class="noindent" >[-0.8999, 2.9391, 0.0036]           </td>
+</tr><tr 
+class="hline"><td><hr></td><td><hr></td><td><hr></td></tr><tr  
+ style="vertical-align:baseline;" id="TBL-6-4-"><td  style="white-space:wrap; text-align:left;" id="TBL-6-4-1"  
+class="td11"><!--l. 357--><p class="noindent" >HEO                    </td><td  style="white-space:wrap; text-align:left;" id="TBL-6-4-2"  
+class="td11"><!--l. 357--><p class="noindent" >[19966.4, 1005.7, 1086.9]           </td><td  style="white-space:wrap; text-align:left;" id="TBL-6-4-3"  
+class="td11"><!--l. 357--><p class="noindent" >[0.1035, -2.5788, 3.6356]           </td>
+</tr><tr 
+class="hline"><td><hr></td><td><hr></td><td><hr></td></tr><tr  
+ style="vertical-align:baseline;" id="TBL-6-5-"><td  style="white-space:wrap; text-align:left;" id="TBL-6-5-1"  
+class="td11"><!--l. 358--><p class="noindent" >MEO1                  </td><td  style="white-space:wrap; text-align:left;" id="TBL-6-5-2"  
+class="td11"><!--l. 358--><p class="noindent" >[8794.68, 414.81, 2546.67]         </td><td  style="white-space:wrap; text-align:left;" id="TBL-6-5-3"  
+class="td11"><!--l. 358--><p class="noindent" >[0.5903, 5.8483, -2.9933]           </td>
+</tr><tr 
+class="hline"><td><hr></td><td><hr></td><td><hr></td></tr><tr  
+ style="vertical-align:baseline;" id="TBL-6-6-"><td  style="white-space:wrap; text-align:left;" id="TBL-6-6-1"  
+class="td11"><!--l. 359--><p class="noindent" >MEO2                  </td><td  style="white-space:wrap; text-align:left;" id="TBL-6-6-2"  
+class="td11"><!--l. 359--><p class="noindent" >[8209.2, 2261.3, 1993.4]            </td><td  style="white-space:wrap; text-align:left;" id="TBL-6-6-3"  
+class="td11"><!--l. 359--><p class="noindent" >[0.5708, -1.7319, 6.4897]           </td>
+</tr><tr 
+class="hline"><td><hr></td><td><hr></td><td><hr></td></tr><tr  
+ style="vertical-align:baseline;" id="TBL-6-7-"><td  style="white-space:wrap; text-align:left;" id="TBL-6-7-1"  
+class="td11"><!--l. 360--><p class="noindent" >MEO3                  </td><td  style="white-space:wrap; text-align:left;" id="TBL-6-7-2"  
+class="td11"><!--l. 360--><p class="noindent" >[5963.6, 5722.1, 6660.2]            </td><td  style="white-space:wrap; text-align:left;" id="TBL-6-7-3"  
+class="td11"><!--l. 360--><p class="noindent" >[-4.3643, 4.6055, 1.5157]           </td>
+</tr><tr 
+class="hline"><td><hr></td><td><hr></td><td><hr></td></tr><tr  
+ style="vertical-align:baseline;" id="TBL-6-8-"><td  style="white-space:wrap; text-align:left;" id="TBL-6-8-1"  
+class="td11"><!--l. 361--><p class="noindent" >Molniya                </td><td  style="white-space:wrap; text-align:left;" id="TBL-6-8-2"  
+class="td11"><!--l. 361--><p class="noindent" >[1977.27, -37010.52, -17989.04]   </td><td  style="white-space:wrap; text-align:left;" id="TBL-6-8-3"  
+class="td11"><!--l. 361--><p class="noindent" >[1.6269, 1.6111, 0.5452]            </td>
+</tr><tr 
+class="hline"><td><hr></td><td><hr></td><td><hr></td></tr><tr  
+ style="vertical-align:baseline;" id="TBL-6-9-"><td  style="white-space:wrap; text-align:left;" id="TBL-6-9-1"  
+class="td11"><!--l. 362--><p class="noindent" >Vallado2               </td><td  style="white-space:wrap; text-align:left;" id="TBL-6-9-2"  
+class="td11"><!--l. 362--><p class="noindent" >Unknown                              </td><td  style="white-space:wrap; text-align:left;" id="TBL-6-9-3"  
+class="td11"><!--l. 362--><p class="noindent" >Unknown                              </td>
+</tr><tr 
+class="hline"><td><hr></td><td><hr></td><td><hr></td></tr><tr  
+ style="vertical-align:baseline;" id="TBL-6-10-"><td  style="white-space:wrap; text-align:left;" id="TBL-6-10-1"  
+class="td11"><!--l. 363--><p class="noindent" >Vallado4               </td><td  style="white-space:wrap; text-align:left;" id="TBL-6-10-2"  
+class="td11"><!--l. 363--><p class="noindent" >[6356.486, 5290.532, 6511.396]   </td><td  style="white-space:wrap; text-align:left;" id="TBL-6-10-3"  
+class="td11"><!--l. 363--><p class="noindent" >[-4.172, 4.776, 1.720]                </td>
+</tr><tr 
+class="hline"><td><hr></td><td><hr></td><td><hr></td></tr><tr  
+ style="vertical-align:baseline;" id="TBL-6-11-"><td  style="white-space:wrap; text-align:left;" id="TBL-6-11-1"  
+class="td11"><!--l. 364--><p class="noindent" ><span 
+class="cmbx-10">Planets</span>             </td><td  style="white-space:wrap; text-align:left;" id="TBL-6-11-2"  
+class="td11"><!--l. 364--><p class="noindent" >AU                                      </td><td  style="white-space:wrap; text-align:left;" id="TBL-6-11-3"  
+class="td11"><!--l. 364--><p class="noindent" >AU/Day                               </td>
+</tr><tr 
+class="hline"><td><hr></td><td><hr></td><td><hr></td></tr><tr  
+ style="vertical-align:baseline;" id="TBL-6-12-"><td  style="white-space:wrap; text-align:left;" id="TBL-6-12-1"  
+class="td11"><!--l. 365--><p class="noindent" >Jupiter                 </td><td  style="white-space:wrap; text-align:left;" id="TBL-6-12-2"  
+class="td11"><!--l. 365--><p class="noindent" >[-1.8435, 4.4655, 1.9591]           </td><td  style="white-space:wrap; text-align:left;" id="TBL-6-12-3"  
+class="td11"><!--l. 365--><p class="noindent" >[-0.0072, -0.0022, -0.0008]         </td>
+</tr><tr 
+class="hline"><td><hr></td><td><hr></td><td><hr></td></tr><tr  
+ style="vertical-align:baseline;" id="TBL-6-13-"><td  style="white-space:wrap; text-align:left;" id="TBL-6-13-1"  
+class="td11"><!--l. 366--><p class="noindent" >Saturn                  </td><td  style="white-space:wrap; text-align:left;" id="TBL-6-13-2"  
+class="td11"><!--l. 366--><p class="noindent" >[-8.9143, -3.6460, -1.1221]         </td><td  style="white-space:wrap; text-align:left;" id="TBL-6-13-3"  
+class="td11"><!--l. 366--><p class="noindent" >[0.0019, -0.0047, -0.0020]          </td>
+</tr><tr 
+class="hline"><td><hr></td><td><hr></td><td><hr></td></tr><tr  
+ style="vertical-align:baseline;" id="TBL-6-14-"><td  style="white-space:wrap; text-align:left;" id="TBL-6-14-1"  
+class="td11"><!--l. 367--><p class="noindent" ><span 
+class="cmbx-10">Asteroids</span>           </td><td  style="white-space:wrap; text-align:left;" id="TBL-6-14-2"  
+class="td11"><!--l. 367--><p class="noindent" >AU                                      </td><td  style="white-space:wrap; text-align:left;" id="TBL-6-14-3"  
+class="td11"><!--l. 367--><p class="noindent" >AU/Day                               </td>
+</tr><tr 
+class="hline"><td><hr></td><td><hr></td><td><hr></td></tr><tr  
+ style="vertical-align:baseline;" id="TBL-6-15-"><td  style="white-space:wrap; text-align:left;" id="TBL-6-15-1"  
+class="td11"><!--l. 368--><p class="noindent" >short_ephem          </td><td  style="white-space:wrap; text-align:left;" id="TBL-6-15-2"  
+class="td11"><!--l. 368--><p class="noindent" >[-0.2794, -1.3027, 0.0229]          </td><td  style="white-space:wrap; text-align:left;" id="TBL-6-15-3"  
+class="td11"><!--l. 368--><p class="noindent" >[0.01268, -0.011406, -8.29813e-4] </td>
+</tr><tr 
+class="hline"><td><hr></td><td><hr></td><td><hr></td></tr><tr  
+ style="vertical-align:baseline;" id="TBL-6-16-"><td  style="white-space:wrap; text-align:left;" id="TBL-6-16-1"  
+class="td11"><!--l. 369--><p class="noindent" >medium_ephem      </td><td  style="white-space:wrap; text-align:left;" id="TBL-6-16-2"  
+class="td11"><!--l. 369--><p class="noindent" >[-0.5686, -1.1954, 0.014096]       </td><td  style="white-space:wrap; text-align:left;" id="TBL-6-16-3"  
+class="td11"><!--l. 369--><p class="noindent" >[0.01634, -0.006386, -0.001285]   </td>
+</tr><tr 
+class="hline"><td><hr></td><td><hr></td><td><hr></td></tr><tr  
+ style="vertical-align:baseline;" id="TBL-6-17-"><td  style="white-space:wrap; text-align:left;" id="TBL-6-17-1"  
+class="td11"><!--l. 370--><p class="noindent" >long_ephem           </td><td  style="white-space:wrap; text-align:left;" id="TBL-6-17-2"  
+class="td11"><!--l. 370--><p class="noindent" >[0.9501, -0.7723, -0.01145]         </td><td  style="white-space:wrap; text-align:left;" id="TBL-6-17-3"  
+class="td11"><!--l. 370--><p class="noindent" >[0.012796, 0.013386, -4.3068e-4]  </td>
+</tr><tr 
+class="hline"><td><hr></td><td><hr></td><td><hr></td></tr><tr  
+ style="vertical-align:baseline;" id="TBL-6-18-"><td  style="white-space:wrap; text-align:left;" id="TBL-6-18-1"  
+class="td11">                 </td></tr></table></div><br 
+class="newline" /><br 
+class="newline" /><span 
+class="cmbx-10">Table 4: </span>True state vectors for examples in Table 3.</div>
+<!--l. 376--><p class="indent" >
+
+   <h3 class="sectionHead"><span class="titlemark">7   </span> <a 
+ id="x1-150007"></a>References</h3>
+<!--l. 378--><p class="noindent" >
+     <ol  class="enumerate1" >
+     <li 
+  class="enumerate" id="x1-15002x1">CASOTTO, S., &#8221;Gaussian Orbit Determination In Universal Variables&#8221;.
+     </li>
+     <li 
+  class="enumerate" id="x1-15004x2">DER,  G.  J.,  &#8221;New  Angles-only  Algorithms  for  Initial  Orbit  Determination&#8221;,  Der
+     Astrodynamics.
+     </li>
+     <li 
+  class="enumerate" id="x1-15006x3">LONG, A. C., CAPPELLARI, J.O., VELEZ, C. E., and FUCHS, A. J., &#8221;Goddard
+     Trajectory  Determination  System  (GTDS)  Mathematical  Theory&#8221;,  1989,  (pp.
+     529-554).
+     </li>
+     <li 
+  class="enumerate" id="x1-15008x4">VALLADO,  D.  A.,  <span 
+class="cmti-10">Fundamentals of Astrodynamics and Applications: Second and</span>
+     <span 
+class="cmti-10">Fourth Editions</span>, Microcosm Press, Hawthorne, CA, 2001 and 2013.</li></ol>
+    
+</body></html> 
+
+
+

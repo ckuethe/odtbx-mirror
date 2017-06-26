@@ -1,4 +1,4 @@
-function out = getgpsmeas(t,x,options,qatt,params)
+function out = getgpsmeas(t,x,options,qatt,params,TX_IDs)
 % GETGPSMEAS  Computes physical parameters required for GPS based measurements
 %
 %   out = GETGPSMEAS(t,x,options) computes physical parameters such as LOS
@@ -9,10 +9,10 @@ function out = getgpsmeas(t,x,options,qatt,params)
 %
 % Note that this function can be called in two different ways based on the
 % params.GPS_SIZE and params.PRN.  If called to compute all satellites in
-% the almanac set parmas.GPS_SIZE to 32 and leave params.PRN empty.  The
+% the almanac set params.GPS_SIZE to 32 and leave params.PRN empty.  The
 % outputs are sized to 32 and indexed via the GPS PRN value.  However, if
 % only one satellite computation is desired, set params.PRN to the desired
-% GPS PRN and set parms.GPS_SIZE to 1.
+% GPS PRN and set params.GPS_SIZE to 1.
 %
 % OPTIONS is an OD Toolbox Measurement Options data structure. See
 % ODTBXOPTIONS for all available options settings. The options parameters
@@ -124,6 +124,8 @@ function out = getgpsmeas(t,x,options,qatt,params)
 %                                  GPS PRN, and designates the index of the
 %                                  desired PRN to be calculated, note
 %                                  GPS_SIZE must be one.
+%	TX_IDs	     (32x1)  Cell array of structures containing information 
+%				about the GPS transmitters
 %
 %   OUTPUTS
 %      out           (1x1)  Output structure containing the following
@@ -144,6 +146,10 @@ function out = getgpsmeas(t,x,options,qatt,params)
 %                                  range rate [km/sec]
 %                              out.GPS_yaw    (N x GPS_SIZE)
 %                                  GPS SV yaw angle
+%			       out.ISNOON     (N x GPS_SIZE)
+%			       	   GPS SV is in noon turn
+%			       out.ISSHADOW   (N x GPS_SIZE)
+%			       	   GPS SV is in shadow
 %                              out.rgps_mag   (N x GPS_SIZE)
 %                                  magnitude of the GPS SV position [km]
 %                              out.health     (N x GPS_SIZE)
@@ -196,6 +202,7 @@ function out = getgpsmeas(t,x,options,qatt,params)
 
 %% Persistent variables for file data caching
 persistent rinexCache;
+persistent jatDCMCache;
 persistent YumaCache;
 
 %% Get values from options
@@ -229,6 +236,9 @@ if ~useLightTimeCor
 else
     if isempty(rinexCache)
         rinexCache = dataCache('create');
+    end
+    if isempty(jatDCMCache)
+        jatDCMCache = dataCache('create');
     end
 end
 
@@ -330,7 +340,11 @@ if useLightTimeCor
     end
     
     % Convert the GPS states from ECEF to ECI
-    ecef2eci  = jatDCM('ecef2eci', (tIter/86400)+epoch,precnNutnExp);
+    ecef2eci  = dataCache('get',jatDCMCache, rinexFile);
+    if isempty(ecef2eci)
+        ecef2eci  = jatDCM('ecef2eci', (tIter/86400)+epoch,precnNutnExp);
+        jatDCMCache = dataCache('add',jatDCMCache, rinexFile, ecef2eci);
+    end
     
     % Rotate GPS coordinates into ECI Frame
     for n=1:length(tIter)
@@ -395,18 +409,19 @@ else  % use Yuma to quickly create geometric measurements
     % Find the list of PRNs with valid almanac health flag
     healthy = gps_alm(:,2)==0;
     healthy_ind = find(healthy);
-    prns = gps_alm(healthy_ind,1);
+    
     
     % check against params.PRN request
     if ~isempty(params.PRN)
-        if any(prns == params.PRN)
-            prns = params.PRN;
-            healthy_ind =find(prns == params.PRN); %override and select only this PRN
+        if any(gps_alm(healthy,1) == params.PRN) % the one we are looking for is healthy, what about multiples?
+            healthy_ind =find(gps_alm(:,1) == params.PRN); %override and select only this PRN
         else
             healthy_ind = []; % bad selection vs almanac health
             fprintf('Yuma Data unavailable for PRN %d\n', params.PRN);
         end
     end
+    
+    prns = gps_alm(healthy_ind,1);
     
     if ~isempty(healthy_ind)
         [gps_pos_ecef,gps_vel_ecef,gps_vel_tot_ecef,dtsv] = alm2xyz(time(:)',gps_alm(healthy_ind,:),1);	% [3,nn,mm] arrays
@@ -434,7 +449,9 @@ else  % use Yuma to quickly create geometric measurements
         out.range = zeros(GPS_SIZE,nn);
         out.rrate = zeros(GPS_SIZE,nn);
         out.GPS_yaw = zeros(nn,GPS_SIZE);
-        out.rgps_mag = zeros(nn,GPS_SIZE);
+        out.ISNOON = zeros(nn,GPS_SIZE);
+	out.ISSSHADOW = zeros(nn,GPS_SIZE);
+	out.rgps_mag = zeros(nn,GPS_SIZE);
         out.health = zeros(nn,GPS_SIZE);
         out.dtsv   = zeros(nn,GPS_SIZE);
         out.prn = [];
@@ -481,7 +498,7 @@ rrate = reshape(dot(los_unit_3d,(gps_vel_tot - vuser_3d_tot)),nn,GPS_SIZE); % (n
 if(params.xmit_pattern_dim == 2)
     
     % transmitter azimuth and elevation based on a GPS SV yaw model
-    [TX_az,TX_el,GPS_yaw] = alm_pos_az_el(epoch,t,sat_pos,gps_pos, gps_vel);
+    [TX_az,TX_el,GPS_yaw,ISNOON,ISSHADOW] = alm_pos_az_el(epoch,t,sat_pos,gps_pos, gps_vel, TX_IDs, prns);
     TX_az = TX_az'; % (nn,GPS_SIZE)
     TX_el = TX_el'; % (nn,GPS_SIZE)
     
@@ -489,6 +506,8 @@ else
     
     TX_az = [];
     GPS_yaw = [];
+    ISNOON = [];
+    ISSHADOW = [];
     %--- Compute elevation angles wrt GPS SV antenna
     % SV off-boresite angle - this is the transmitter 'elevation' angle
     % measured between los and the SV antenna boresite (nadir)
@@ -556,6 +575,8 @@ out.range = los_mag';
 out.rrate = rrate';
 out.dtsv = dtsv;
 out.GPS_yaw = GPS_yaw;
+out.ISNOON = ISNOON;
+out.ISSHADOW = ISSHADOW;
 out.rgps_mag = rgps_mag;
 out.health = health;
 if GPS_SIZE == 1

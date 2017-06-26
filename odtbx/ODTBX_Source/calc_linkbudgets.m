@@ -1,4 +1,4 @@
-function [AntLB, HVIS] = calc_linkbudgets(out, options, RX_link, TX_link)
+function [AntLB, HVIS, AntVis] = calc_linkbudgets(out, options, RX_link, TX_link)
 
 % CALC_LINKBUDGETS  Calculates link budget and visibility between satellite targets
 %
@@ -64,6 +64,7 @@ function [AntLB, HVIS] = calc_linkbudgets(out, options, RX_link, TX_link)
 %                           bias due to visibility or blockage.  The fields
 %                           are:
 %           Halpha_r    (MxN)   The receiver elevation angle (rad)
+%           Halpha_t    (MxN)   The transmitter elevation angle (rad)
 %           Hvis_beta   (MxN)   Logical array where both transmit and
 %                               receive antenna elevation angles are
 %                               within antenna mask angle limits
@@ -207,7 +208,7 @@ AntLB = cell(loop,1); % cell array of structs to hold link budget data
 
 for ANT=1:loop
     
-    AntLB{ANT} = struct('Halpha_r',[],'Hvis_beta',[],'Hvis_CN0',[],...
+    AntLB{ANT} = struct('Halpha_r',[],'Halpha_t',[],'Hvis_beta',[],'Hvis_CN0',[],...
         'HCN0',[],'HAd',[],'HAr',[],'HAP',[],'HRP',[],'HAt',[]);
     
     AntLB_raw = struct('CN0',[],'Ad',[],'Ar',[],'AP',[],'RP',[],'At',[]);
@@ -257,6 +258,7 @@ for ANT=1:loop
 
     %  OUTPUT PARAMETERS
     AntLB{ANT}.Halpha_r = RX_link.alpha(:,:,ANT)';             % [GPS_SIZE,nn]
+    AntLB{ANT}.Halpha_t = TX_link.alpha(:,:)'; % [GPS_SIZE,nn]
     AntLB{ANT}.Hvis_beta = vis_beta';             % [GPS_SIZE,nn]
     AntLB{ANT}.Hvis_CN0 = vis_CN0';             % [GPS_SIZE,nn]
     AntLB{ANT}.HCN0 = AntLB_raw.CN0';             % [GPS_SIZE,nn]
@@ -283,6 +285,6 @@ for ANT=1:loop
 end % ANT loop
 
 %% Combine results across multiple antennas
-HVIS = visibility_constraints(AntLB, options, health, Hvis_earth, Hvis_atm);
+[HVIS, AntVis] = visibility_constraints(AntLB, options, health, Hvis_earth, Hvis_atm);
 end
 
