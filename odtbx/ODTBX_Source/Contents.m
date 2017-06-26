@@ -64,6 +64,7 @@
 %   gainpenalty_mask         - Check and apply additional mask angle penalty.
 %   gasdyn                   - Simulates comet outgassing forces
 %   get_linkbudget           - Calculate a link budget between the receiver x1 with num_ant antennas and
+%   get_gps_block            - get_gps_block
 %   getgpsmeas               - Computes physical parameters required for GPS based measurements
 %   getBodyShadow            - Determine whether any of the specified celestial bodies is shadowing the spacecraft.
 %   getOdtbxOptions          - Get ODTBX Options structure parameter.
@@ -84,6 +85,7 @@
 %   initialize_nbody         - Initializes and validates inputs for NBODYPM
 %   integ                    - Integration of state, and possibly STM and process noise.
 %   integev                  - Integration of state, and possibly STM, etc. w/event handling.
+%   IonoDelay                - Calculate the signal delay (in km) caused by a signal traveling 
 %   IonoModel_basic          - Calculate the signal delay (in km) caused by a signal traveling 
 %   kalmup                   - Kalman update with sigma-edit.
 %   kep2cart                 - Convert Keplerian orbital elements to cartesian states.
@@ -111,6 +113,7 @@
 %   ominuscCon               - Innovations, meas. partials, and possibly innovation covariance.
 %   opnavmeas                - Simulates measurements from optical landmark tracking.
 %   opt_sched                - Calculates the sensitivities of a measurement schedule.
+%   plot_2D_antenna_gain     - fname = 'S41P1L1Rpublic.txt';
 %   plot_est_cno             - Plots the estimated Carrier to Noise ratio from gps_est_cno vs time.
 %   plot_gps_cno             - Plots the raw GPS signal to noise ratio vs time.
 %   plot_gps_gain_2d         - Plots the gain from gps_gain vs azimuth and elevation angles (2D plots).
@@ -120,9 +123,11 @@
 %   plot_gps_pp_rrdot        - Plots the range and range rate physical parameters from gps_phys_params vs time.
 %   plot_gps_prange          - Plots the raw GPS pseudorange vs time.
 %   plot_ominusc             - Plots the observed measurement minus the computed
+%   polarplot3d              - Plot a 3D surface from polar coordinate data
 %   polydyn                  - Force model for exterior gravitation of a polyhedron.
 %   q2dcm                    - Converts from a quaternion [vector;scalar] to a direction cosine matrix
 %   read_rnxn                - Read rinex formated GPS broadcast ephemeris data
+%   read_sp3ephem            - Really rough first crack at this
 %   read_spephem             - Read in SP Ephemeris formatted ASCII text file
 %   read_stkephem            - Read in STK Ephemeris (formatted ASCII text file)
 %   read_yuma                - Read in yuma format GPS almanac file
@@ -141,6 +146,7 @@
 %   sigextract               - Extract standard deviations from "scrunched" covariances.
 %   slerp                    - Interpolates between two quaterntions (uniform angular velocity, fixed axis).
 %   solve_consider           - solve_consider Summary of this class goes here
+%   sp3ephem2xyz             - Placeholder for sp3 interpolator
 %   srpAccel                 - Compute solar radiation pressure acceleration
 %   staEarthTide             - Ground station position adjustment for solid earth tides
 %   stationData              - Provides database information about selected ground stations

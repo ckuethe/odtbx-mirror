@@ -15,6 +15,8 @@
 %   example_estspf            - This file is an example for the ODTBX Sigma Point Filter Estimator, estspf.m, with Monte Carlo runs.
 %   example_estspf_2          - This file is an example for the ODTBX Sigma Point Filter Estimator, estspf.m. 
 %   example_estsrif           - Orbit determination of the IBEX mission using the Square Root Information Filter, ESTSRIF
+%   gmat_api_example_1        - Demonstrates using the GMAT Java API
+%   gmat_api_example_2        - Demonstrates using the GMAT Java API
 %   gsmeas_example            - This demonstrates the use of the gsmeas measurement model.
 %   gsmeas_linkbudget_example - This demonstrates the use of the gsmeas measurement model.
 %   gps_antenna_tools_demo    - Demo for GPS link budget and antenna pattern analysis tools.
@@ -37,6 +39,8 @@
 %   dualIADat                 - Get measurement values for the chaser_target tutorial.
 %   dualIADyn                 - Get dynamics & estimation values for the chaser_target tutorial.
 %   editratio_test            - Specify the initial reference state.
+%   gmat_dat                  - datfun for the GMAT API examples
+%   gmat_dyn                  - dynfun for the GMAT API examples
 %   gps_antenna_tools_support - Support script to gps_antenna_tools_demo.m
 %   pancake_dat               - Get measurement data for the pancake tutorial.
 %   pancake_datsf             - Get measurement data for the pancake tutorial.
@@ -53,3 +57,4 @@
 %   rrdot3D                   - Range and range-rate measurement model for 3-D inertial state
 %   testeom                   - Example EOM file for use with the MATLAB Adaptor.
 %   upvec_test                - estseq example.
+
