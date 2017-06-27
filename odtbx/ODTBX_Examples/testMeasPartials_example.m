@@ -22,6 +22,7 @@
 %dbstop if error
 
 %% Test gsmeas H matrix with RangeRate
+RandStream.setGlobalStream(RandStream('shr3cong','Seed',546.4737))
 epoch  = datenum('Jan 1 2010');
 gsList = createGroundStationList();
 gsID   = {'DS16','DS46','DS66'};
@@ -42,6 +43,7 @@ measOptions = setOdtbxOptions(measOptions,'gsECEF',gsECEF);
 testMeasPartials(@gsmeas,measOptions);
 
 %% Test gsmeas H matrix with Doppler
+RandStream.setGlobalStream(RandStream('shr3cong','Seed',546.4737))
 epoch  = datenum('Jan 1 2010');
 gsList = createGroundStationList();
 gsID   = {'DS16','DS46','DS66'};
@@ -62,6 +64,7 @@ measOptions = setOdtbxOptions(measOptions,'gsECEF',gsECEF);
 testMeasPartials(@gsmeas,measOptions);
 
 %% Test tdrssmeas H matrix with RangeRate
+RandStream.setGlobalStream(RandStream('shr3cong','Seed',546.4737))
 epoch  = datenum([2008  9 26  0  0   .000]);
 tdrss.type  = 'Keplerian';
 tdrss.sat(1).epoch = epoch;
@@ -102,6 +105,7 @@ measOptions = setOdtbxOptions(measOptions,'tdrss', tdrss);
 testMeasPartials(@tdrssmeas,measOptions);
 
 %% Test tdrssmeas H matrix with Doppler
+RandStream.setGlobalStream(RandStream('shr3cong','Seed',546.4737))
 epoch  = datenum([2008  9 26  0  0   .000]);%datenum('1 Oct 2008 09:27:52.832');
 tdrss.type  = 'Keplerian';
 tdrss.sat(1).epoch = epoch;
@@ -142,6 +146,7 @@ measOptions = setOdtbxOptions(measOptions,'tdrss', tdrss);
 testMeasPartials(@tdrssmeas,measOptions);
 
 %% Test ddormeas H matrix
+RandStream.setGlobalStream(RandStream('shr3cong','Seed',546.4737))
 epoch    = datenum('01 Jul 2007 14:00:00.000');
 gsID = {'DS15','DS45','DS65'};
 gsList  = createGroundStationList; %generates a list of all of the ground stations
@@ -158,6 +163,7 @@ measOptions = setOdtbxOptions(measOptions,'ddor',ddor);
 testMeasPartials(@ddormeas,measOptions);
 
 %% Test lnrmeas H matrix
+RandStream.setGlobalStream(RandStream('shr3cong','Seed',546.4737))
 epoch  = datenum('1 Dec 2016 00:00:00.000');
 relay.type            = 'STKEphem';
 relay.sat(1).filename = 'Relay1.e'; %Lunar Relay Satellite #1
@@ -173,14 +179,22 @@ measOptions = setOdtbxOptions(measOptions,'relay', relay);
 testMeasPartials(@lnrmeas,measOptions);
 
 %% Test gpsmeas H matrix
-measOptions.('epoch')           = datenum('Jan 1 2006');
-measOptions.('useRange')        = true;
-measOptions.('useDoppler')      = true;
-measOptions.('RecAcqThresh')    = -Inf; % no threshold
-measOptions.('RecTrackThresh')  = -Inf; % no threshold
-measOptions.('AtmosphereMask')  = - JATConstant('rEarth','WGS84') / 1000; %removes the Earth
-measOptions.('AntennaPattern')  = {'omni.txt'};
-measOptions.('AntennaPointing') = -1;
-measOptions.('PrecnNutnExpire') = 0; % always update precession and nutation
+RandStream.setGlobalStream(RandStream('shr3cong','Seed',546.4737))
+measOptions = odtbxOptions('measurement');
+measOptions = setOdtbxOptions(measOptions, ...
+                              'epoch', datenum('Jan 1 2006'), ...
+                              'useRange', true, ...
+                              'rangeType', '2way', ...
+                              'useRangeRate', false, ...
+                              'useDoppler', true, ...
+                              'PrecnNutnExpire', 0); % Always update precession and nutation
+% Parameters specific to link budget
+link_budget.AntennaPattern    = {'omni.txt'};
+link_budget.AtmosphereMask    = - JATConstant('rEarth','WGS84') / 1000; %removes the Earth
+link_budget.RecAcqThresh      = -Inf;            % no threshold
+link_budget.RecTrackThresh    = -Inf;            % no threshold
+link_budget.TX_AntennaPointing= -1; % 1 for zenith pointing, -1 for nadir pointing
+measOptions = setOdtbxOptions(measOptions, 'linkbudget', link_budget);
+                          
 warning('off', 'ODTBX:GPSMEAS:noBodyQuat')
 testMeasPartials(@gpsmeas,measOptions);
