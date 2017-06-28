@@ -274,22 +274,29 @@ if startuptype ~= 3 || isdir(d)
     addpath(d);
 end
 
-% Make sure MICE version is correct for MATLAB version
-miceversiontxt = fileread(fullfile(odtbxMicePath,'doc','version.txt'));
-miceversionstart = strfind(miceversiontxt, 'V.N');
-miceversionnum = str2num(miceversiontxt(miceversionstart+3:miceversionstart+6));
-mlver = ver('MATLAB');
-mlver = str2num(mlver.Version);
-if((mlver >= 9.2) && (miceversionnum < 66))
-    warning('ODTBX:MICEVersion', ['Using MATLAB R2017a or greater, but ' ...
+% If user installed MICE, check its version against MATLAB version
+miceversionfile = fullfile(odtbxMicePath, 'doc','version.txt');
+if(exist(miceversionfile, 'file'))
+    miceversiontxt = fileread(fullfile(odtbxMicePath,'doc','version.txt'));
+    miceversionstart = strfind(miceversiontxt, 'V.N');
+    miceversionnum = str2num(miceversiontxt(miceversionstart+3:miceversionstart+6));
+    mlver = ver('MATLAB');
+    mlver = str2num(mlver.Version);
+    
+    % MATLAB R2017a onwards requires MICE v0066
+    if((mlver >= 9.2) && (miceversionnum < 66))
+        warning('ODTBX:MICEVersion', ['Using MATLAB R2017a or greater, but ' ...
             'MICE version is not 66. Please download MICE v0066 or greater ' ...
             'from <a href="http://sourceforge.net/projects/odtbx/files">ODTBX on SourceForge</a>.']);
-elseif((mlver < 9.2) && (miceversionnum >= 66))
-    warning('ODTBX:MICEVersion', ['Using MATLAB R2016b or earlier, but ' ...
-            'MICE version is 66 or greater. Please use ODTBX installer to ' ...
+        
+    % MATLAB R2016a and earlier requires MICE v0064
+    elseif((mlver < 9.2) && (miceversionnum >= 65))
+        warning('ODTBX:MICEVersion', ['Using MATLAB R2016b or earlier, but ' ...
+            'MICE version is 66 or greater. Please use the ODTBX installer to ' ...
             'install MICE v0064']);
+    end
 end
-clear miceversiontxt miceversionstart miceversionnum mlver;
+clear miceversionfile miceversiontxt miceversionstart miceversionnum mlver;
 
 % Set Matlab paths for MICE:
 addpath(fullfile(odtbxMicePath,'doc'));
